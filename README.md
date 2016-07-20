@@ -9,21 +9,21 @@ Rake TASK Setup
 - Rollen:
 - 
 
-* automatic generated Custom fields:
--License price
--License purchase price
+automatic generated Custom fields:
+- License price
+- License purchase price
 
--Maintenance p.P.            
--Maintenance purchase p.P. (p.P. means .. per Period)
--Maintenance Date
--Maintenance Paid Until
--Maintenance Invoice Received
+- Maintenance p.P.            
+- Maintenance purchase p.P. (p.P. means .. per Period)
+- Maintenance Date
+- Maintenance Paid Until
+- Maintenance Invoice Received
 
--Period  .. in days (but 365 means year even in a leap-year)
+- Period  .. in days (but 365 means year even in a leap-year)
 
--Customer .. lookup on Projekt
+- Customer .. lookup on Projekt
 
-* optional License Information fields
--License Number
--Control Number
--LEF (license enabling file)
+optional License Information fields
+- License Number
+- Control Number
+- LEF (license enabling file)
