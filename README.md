@@ -1,15 +1,15 @@
-Rake TASK Setup
-- Projekt muss angelegt werden
-- Tracker müssen angelegt werden:   [Lizenz, Lizenswereiterung]
-- Aktivität muss angelegt werden:   [Lizenz, Wartung]
-- Ticketstatus:                     [aktiv, inaktiv]
+# Redmine License Manager
 
-- Custom Fields:
+## Current To Do
 
-- Rollen:
-- 
+### RakeTask for Setup
+- Create Project that acts as Container for all the Licenses (A License will be a Data Entry of Type Issue)
+- Create Tracker:   [Lizenz, Lizenswereiterung]
+- Create Aktivities muss angelegt werden:   [Lizenz, Wartung]
+- Create Tracker Status:                     [aktiv, inaktiv]
+- Link all components/create config so that the Trackers are only allowed in the License Project, Aktivities are allowed for the given Trackers etc.
 
-automatic generated Custom fields:
+### Custom Fields (available for Issues within License Project):
 - License price
 - License purchase price
 
@@ -27,3 +27,10 @@ optional License Information fields
 - License Number
 - Control Number
 - LEF (license enabling file)
+
+
+### Roles
+
+
+
+
