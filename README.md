@@ -4,8 +4,8 @@
 
 ### RakeTask for Setup
 - Create Project that acts as Container for all the Licenses (A License will be a Data Entry of Type Issue)
-- Create Tracker:   [Lizenz, Lizenswereiterung]
-- Create Aktivities muss angelegt werden:   [Lizenz, Wartung]
+- Create Tracker:   [License, Licenseextension]
+- Create Aktivities muss angelegt werden:   [License, Maintanance]
 - Create Tracker Status:                     [aktiv, inaktiv]
 - Link all components/create config so that the Trackers are only allowed in the License Project, Aktivities are allowed for the given Trackers etc.
 
