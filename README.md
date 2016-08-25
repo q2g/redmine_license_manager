@@ -3,7 +3,7 @@
 ## Current To Do
 
 ### RakeTask for Setup
-- Create Project that acts as Container for all the Licenses (A License will be a Data Entry of Type Issue)
+- Create Project that acts as Container for all the Licenses (A License will be a Data Entry of Type Issue) (Any poject that has the License Tracker can acts as License Container, Task will check if one valid container exists, otherwise one will be created)
 - Create Tracker:   [License, Licenseextension]
 - Create Aktivities muss angelegt werden:   [License, Maintanance]
 - Create Tracker Status:                     [aktiv, inaktiv]
@@ -13,7 +13,7 @@
 - License price
 - License purchase price
 
-- Maintenance p.P.            
+- Maintenance p.P.
 - Maintenance purchase p.P. (p.P. means .. per Period)
 - Maintenance Date
 - Maintenance Paid Until
@@ -21,7 +21,7 @@
 
 - Period  .. in days (but 365 means year even in a leap-year)
 
-- Customer .. lookup on Projekt
+- Customer .. lookup on Projekt (Parent Projects will show all licenses for subprojects)
 
 optional License Information fields
 - License Number
@@ -32,5 +32,12 @@ optional License Information fields
 ### Roles
 
 
+## Info
+
+This Plugin was created by Florian Eck ([EL Digital Solutions](http://www.el-digital.de)) for [akquinet finance & controlling GmbH](http://www.akquinet.de/).
+
+It is licensed under GNU GENERAL PUBLIC LICENSE.
+
+It has been tested with EasyRedmine, but should also work for regular Redmine installations. If you find any bugs, please file an issue or create a PR.
 
 
