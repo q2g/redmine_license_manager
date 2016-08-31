@@ -1,3 +1,3 @@
-module RLM
+module RLM; end
 
-end
+require 'rlm/setup'
