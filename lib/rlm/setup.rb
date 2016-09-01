@@ -12,7 +12,19 @@ module RLM
 
     end
 
+
+    module SetterExtensions
+
+      def self.included(base)
+
+      end
+
+    end
+
     module Activities
+
+      include SetterExtensions
+
       class << self
 
         # TODO: Abstract and move values to YML file

@@ -1,0 +1,26 @@
+rlm:
+  module_name: redmine_license_manager
+  naming_prefix: rlm
+  # values that need to be created within a given submodule of the setup class
+  # See locales file for the name of the created instance
+  modules:
+    setup:
+      # Locales are used to setup the names of the given instances
+      # Rake task can be used to change the names of the listed entries
+      # `identify_column` is used as the unique key
+      # `entries` are the values created - mapped to the `identify_column` attribute via the Setup.name (will be prefixed with 'naming_prefix')
+      #
+      activities:
+        identify_column: internal_name
+        class_name: TimeEntryActivity
+        entries: [license, maintenance]
+      trackers:
+        identify_column: internal_name
+        class_name: Tracker
+        entries: [license, license_extension]
+        additional_attributes:
+          default_status_id: 'IssueStatuses.inactive.id' # This will run through eval()
+      issue_statuses:
+        identify_column: rlm_internal_name
+        class_name: IssueStatus
+        entries: [license_active, license_inactive]
