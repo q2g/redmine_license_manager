@@ -1,4 +1,4 @@
-namspace :redmine_license_manager do
+namespace :redmine_license_manager do
 
 
 

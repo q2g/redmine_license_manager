@@ -1,0 +1,25 @@
+en:
+  rlm:
+    # Map to the 'entries' values for given module/setup type
+    entries:
+      activities:
+        license: 'License'
+        maintenance: 'Maintenance'
+      trackers:
+        license: 'License'
+        license_extension: 'License Extension'
+      issue_statuses:
+        license_active: active
+        license_inactive: disabled
+      issue_custom_fields:
+        # TODO: Correct naming required
+        license_price: License price (EUR)
+        license_purchase_price: License purchase price (EUR)
+        maintenance_pp: 'Maintenance pp'
+        maintenance_purchase_pp: 'maintenance purchase'
+        maintenance_date: 'maintenance date'
+        maintenance_paid_until: 'maintenance paid until'
+        maintenance_invoice_received: 'maintenance invoice received'
+        period_in_days: 'period in days'
+        customer_project_reference: 'Customer/Project'
+

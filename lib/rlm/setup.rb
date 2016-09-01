@@ -1,13 +1,32 @@
 module RLM
-  module Setup
+  class Setup
 
     NAME_PREFIX = 'rlm'
     MODULE_NAME = :redmine_license_manager
 
+    cattr_reader :yaml_config
+
     class << self
+
+      def yaml_config
+        if @@yaml_config.nil?
+          config_path = File.expand_path("../../../config/rlm_settings.yml", __FILE__)
+          @@yaml_config = YAML::load(File.open(config_path).read)
+        end
+
+        @@yaml_config
+      end
 
       def name_for(name)
         [NAME_PREFIX, '-', name.parameterize].join()
+      end
+
+      def module_name
+        yaml_config['module_name']
+      end
+
+      def naming_prefix
+        yaml_config['naming_prefix']
       end
 
     end

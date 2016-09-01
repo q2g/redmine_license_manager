@@ -1,26 +1,45 @@
-rlm:
-  module_name: redmine_license_manager
-  naming_prefix: rlm
-  # values that need to be created within a given submodule of the setup class
-  # See locales file for the name of the created instance
-  modules:
-    setup:
-      # Locales are used to setup the names of the given instances
-      # Rake task can be used to change the names of the listed entries
-      # `identify_column` is used as the unique key
-      # `entries` are the values created - mapped to the `identify_column` attribute via the Setup.name (will be prefixed with 'naming_prefix')
-      #
-      activities:
-        identify_column: internal_name
-        class_name: TimeEntryActivity
-        entries: [license, maintenance]
-      trackers:
-        identify_column: internal_name
-        class_name: Tracker
-        entries: [license, license_extension]
-        additional_attributes:
-          default_status_id: 'IssueStatuses.inactive.id' # This will run through eval()
-      issue_statuses:
-        identify_column: rlm_internal_name
-        class_name: IssueStatus
-        entries: [license_active, license_inactive]
+module_name: redmine_license_manager
+naming_prefix: rlm
+# values that need to be created within a given submodule of the setup class
+# See locales file for the name of the created instance
+modules:
+  setup:
+    # Locales are used to setup the names of the given instances
+    # Rake task can be used to change the names of the listed entries
+    # `identify_column` is used as the unique key
+    # `entries` are the values created - mapped to the `identify_column` attribute via the Setup.name (will be prefixed with 'naming_prefix')
+    #
+    activities:
+      class_name: TimeEntryActivity
+      identify_column: internal_name
+      entries: [license, maintenance]
+
+    trackers:
+      class_name: Tracker
+      identify_column: internal_name
+      entries: [license, license_extension]
+      additional_attributes:
+        default_status_id: 'IssueStatuses.inactive.id'
+        # This will run through eval(), Special case, as Trackers need a value for default status id even though using eval isn't pretty nice coding style.
+        # Improvements welcome
+
+    issue_statuses:
+      class_name: IssueStatus
+      identify_column: rlm_internal_name
+      entries: [license_active, license_inactive]
+
+    issue_custom_fields:
+      class_name: IssueCustomField
+      identify_column: internal_name
+      # special case here, as the entries dont just have a name, they also have a field type
+      entries:
+        license_price: float
+        license_purchase_price: float
+        maintenance_pp: float
+        maintenance_purchase_pp: float
+        maintenance_date: date
+        maintenance_paid_until: date
+        maintenance_invoice_received: boolean
+        period_in_days: integer
+        customer_project_reference: integer
+
