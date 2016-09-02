@@ -52,6 +52,10 @@ module RLM
           @@to_create_classname_from_config = Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['class_name'].constantize
         end
 
+
+        # Dynamically defining the getter/Setter method base on the settings in yaml file
+        # Custom fields are not covered yet due to their special behavoir, like having the field_format col that makes creating them more complex
+
       end
 
 
