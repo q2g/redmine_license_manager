@@ -52,6 +52,10 @@ module RLM
           @@to_create_classname_from_config = Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['class_name'].constantize
         end
 
+        def self.identify_column
+          Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['identify_column']
+        end
+
 
         # Dynamically defining the getter/Setter method base on the settings in yaml file
         # Custom fields are not covered yet due to their special behavoir, like having the field_format col that makes creating them more complex
@@ -70,7 +74,7 @@ module RLM
         # TODO: Abstract and move values to YML file
 
         def license
-          t = ::TimeEntryActivity.find_or_initialize_by(internal_name: Setup.name_for('license'))
+          t = ::TimeEntryActivity.find_or_initialize_by(internal_name: Setup.name_for('license', current_module_scope: self.rlm_module_name_for_config))
 
           if t.new_record?
             t.name = 'License'
