@@ -22,7 +22,7 @@ RSpec.shared_examples "RlmAttributeSetterExtensions" do
           expect(described_class.to_create_classname_from_config).to receive(:find_or_initialize_by).with(
             described_class.identify_column.to_sym => RLM::Setup.name_for(entry_name, current_module_scope: described_class.rlm_module_name_for_config)).and_return(entry)
           expect(entry).to receive(:new_record?).and_return(true)
-          expect(entry).to receive('name=').with(I18n.t("rlm.entries.#{described_class.rlm_module_name_for_config}.#{entry_name}"))
+          expect(entry).to receive('name=').with(described_class.human_entry_name(entry_name))
           expect(entry).to receive(:save)
         end
 

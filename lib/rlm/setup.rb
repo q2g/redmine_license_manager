@@ -56,6 +56,17 @@ module RLM
           Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['identify_column']
         end
 
+        def self.human_entry_name(entry_name)
+          # truncated name as redmine mostly allows only 30 chars as name
+          n = I18n.t(entry_name, scope: "rlm.entries.#{rlm_module_name_for_config}")
+          return [n.first(15),n.last(15)].join
+        end
+
+        # Dynamically defining the getter/Setter method base on the settings in yaml file
+        # Custom fields are not covered yet due to their special behavoir, like having the field_format col that makes creating them more complex
+        # even though eval is the most dirty solution, it was the most reliable and efficient one after 2 hours of trying.
+        # PRs about this part are very welcome...
+
         self.required_entries_from_config.each do |entry_name|
 
           eval "
@@ -63,38 +74,25 @@ module RLM
               t = #{to_create_classname_from_config}.find_or_initialize_by(:#{identify_column} => '#{Setup.name_for(entry_name, current_module_scope: self.rlm_module_name_for_config)}')
 
               if t.new_record?
-                t.name = \"#{I18n.t(entry_name, scope: "rlm.entries.#{rlm_module_name_for_config}")}\"
+                t.name = \"#{human_entry_name(entry_name)}\"
                 t.save
               end
 
               return t
             end
           "
-
         end
 
-
-
-        # Dynamically defining the getter/Setter method base on the settings in yaml file
-        # Custom fields are not covered yet due to their special behavoir, like having the field_format col that makes creating them more complex
-
-
-
+        def self.all
+          self.required_entries_from_config.map {|e| self.send e }
+        end
       end
 
 
     end
 
     class Activities
-
       include RlmAttributeSetterExtensions
-
-      class << self
-
-        def all
-          [ license, maintenance ]
-        end
-      end
     end
 
     module Trackers
