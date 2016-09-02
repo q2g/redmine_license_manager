@@ -56,9 +56,29 @@ module RLM
           Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['identify_column']
         end
 
+        self.required_entries_from_config.each do |entry_name|
+
+          eval "
+            def self.#{entry_name}
+              t = #{to_create_classname_from_config}.find_or_initialize_by(:#{identify_column} => '#{Setup.name_for(entry_name, current_module_scope: self.rlm_module_name_for_config)}')
+
+              if t.new_record?
+                t.name = \"#{I18n.t(entry_name, scope: "rlm.entries.#{rlm_module_name_for_config}")}\"
+                t.save
+              end
+
+              return t
+            end
+          "
+
+        end
+
+
 
         # Dynamically defining the getter/Setter method base on the settings in yaml file
         # Custom fields are not covered yet due to their special behavoir, like having the field_format col that makes creating them more complex
+
+
 
       end
 
@@ -70,30 +90,6 @@ module RLM
       include RlmAttributeSetterExtensions
 
       class << self
-
-        # TODO: Abstract and move values to YML file
-
-        def license
-          t = ::TimeEntryActivity.find_or_initialize_by(internal_name: Setup.name_for('license', current_module_scope: self.rlm_module_name_for_config))
-
-          if t.new_record?
-            t.name = 'License'
-            t.save
-          end
-
-          return t
-        end
-
-        def maintenance
-          t = ::TimeEntryActivity.find_or_initialize_by(internal_name: Setup.name_for('maintenance'))
-
-          if t.new_record?
-            t.name = 'Maintenance'
-            t.save
-          end
-
-          return t
-        end
 
         def all
           [ license, maintenance ]
