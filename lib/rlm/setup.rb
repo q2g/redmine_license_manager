@@ -35,7 +35,6 @@ module RLM
 
       included do |base|
 
-        cattr_reader :required_entries_from_config
         cattr_reader :to_create_classname_from_config
         cattr_reader :identify_column_from_config
 
@@ -45,7 +44,7 @@ module RLM
         end
 
         def self.required_entries_from_config
-          @@required_entries_from_config ||= Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entries']
+          Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entries']
         end
 
         def self.to_create_classname_from_config
@@ -129,19 +128,7 @@ module RLM
     end
 
     module IssueStatuses
-      class << self
-
-        # TODO: IssueStatus has no internal name, which makes this very fragile
-
-        def active
-          ::IssueStatus.find_or_create_by(name: 'License active')
-        end
-
-        def inactive
-          ::IssueStatus.find_or_create_by(name: 'License inactive')
-        end
-
-      end
+      include RlmAttributeSetterExtensions
     end
 
     module Workflows
