@@ -1,9 +1,6 @@
 module RLM
   class Setup
 
-    NAME_PREFIX = 'rlm'
-    MODULE_NAME = :redmine_license_manager
-
     cattr_reader :yaml_config
 
     class << self
@@ -17,8 +14,8 @@ module RLM
         @@yaml_config
       end
 
-      def name_for(name)
-        [NAME_PREFIX, '-', name.parameterize].join()
+      def name_for(name, current_module_scope: nil)
+        [naming_prefix, current_module_scope.try(:parameterize), name.parameterize].compact.join("-")
       end
 
       def module_name
@@ -32,17 +29,37 @@ module RLM
     end
 
 
-    module SetterExtensions
+    module RlmAttributeSetterExtensions
 
-      def self.included(base)
+      extend ActiveSupport::Concern
+
+      included do |base|
+
+        cattr_reader :required_entries_from_config
+        cattr_reader :to_create_classname_from_config
+        cattr_reader :identify_column_from_config
+
+        # Get Ident key from 'rlm_settings.yml' based on the class the module is included in
+        def self.rlm_module_name_for_config
+          self.name.split('::').last.underscore
+        end
+
+        def self.required_entries_from_config
+          @@required_entries_from_config ||= Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entries']
+        end
+
+        def self.to_create_classname_from_config
+          @@to_create_classname_from_config = Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['class_name'].constantize
+        end
 
       end
 
+
     end
 
-    module Activities
+    class Activities
 
-      include SetterExtensions
+      include RlmAttributeSetterExtensions
 
       class << self
 

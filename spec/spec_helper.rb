@@ -22,6 +22,8 @@ Rails.application.config.paths['app/views'].unshift(File.expand_path("../../app/
 # Extend test suite
 require "pry"
 require "factory_girl"
+Dir.glob(File.expand_path("../support/*.rb", __FILE__)).each {|factory_rb| require factory_rb }
+
 
 Rails.application.config.after_initialize do
   Rails.application.config.i18n.load_path += Dir[File.expand_path("../config/locales/*.yml", __FILE__)]
