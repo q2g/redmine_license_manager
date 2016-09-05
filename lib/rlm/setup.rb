@@ -28,7 +28,6 @@ module RLM
 
     end
 
-
     module RlmAttributeSetterExtensions
 
       extend ActiveSupport::Concern
@@ -55,81 +54,67 @@ module RLM
           Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['identify_column']
         end
 
-        def self.human_entry_name(entry_name)
+        def self.human_entry_name(entry_name, locale: I18n.locale)
           # truncated name as redmine mostly allows only 30 chars as name
-          n = I18n.t(entry_name, scope: "rlm.entries.#{rlm_module_name_for_config}")
-          return [n.first(15),n.last(15)].join
+          n = I18n.t(entry_name, scope: "rlm.entries.#{rlm_module_name_for_config}", locale: locale.to_s.downcase.to_sym)
+          return n.first(30)
         end
 
-        # Dynamically defining the getter/Setter method base on the settings in yaml file
-        # Custom fields are not covered yet due to their special behavoir, like having the field_format col that makes creating them more complex
-        # even though eval is the most dirty solution, it was the most reliable and efficient one after 2 hours of trying.
-        # PRs about this part are very welcome...
+        def self.evaluated_additional_attributes
+          data_attributes = {}
 
-        self.required_entries_from_config.each do |entry_name|
-
-          eval "
-            def self.#{entry_name}
-              t = #{to_create_classname_from_config}.find_or_initialize_by(:#{identify_column} => '#{Setup.name_for(entry_name, current_module_scope: self.rlm_module_name_for_config)}')
-
-              if t.new_record?
-                t.name = \"#{human_entry_name(entry_name)}\"
-                t.save
-              end
-
-              return t
+          if Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['additional_attributes'].to_a.any?
+            Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['additional_attributes'].each do |attribute_name, to_evaluate_value|
+              data_attributes.merge!(attribute_name => eval(to_evaluate_value))
             end
-          "
+          end
+
+          return data_attributes
         end
 
         def self.all
           self.required_entries_from_config.map {|e| self.send e }
         end
+
+        # Dynamically defining the getter/Setter method base on the settings in yaml file
+        # Custom fields are not covered yet due to their special behavoir, like having the field_format col that makes creating them more complex
+
+        self.required_entries_from_config.each do |entry_name|
+          (class << base; self end).class_eval do
+            define_method entry_name do
+
+              data_attributes = { identify_column => Setup.name_for(entry_name, current_module_scope: self.rlm_module_name_for_config) }
+
+              # Because of higher complexity, custom fields are handled are little bit different
+              if self.rlm_module_name_for_config == 'issue_custom_fields'
+                data_attributes.merge!(Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entry_settings'][entry_name])
+              else
+                data_attributes.merge!(self.evaluated_additional_attributes)
+              end
+
+              t = to_create_classname_from_config.find_or_initialize_by(data_attributes)
+
+              if t.new_record?
+                t.name = human_entry_name(entry_name)
+                t.save
+              end
+
+              return t
+            end
+          end
+        end
+
       end
 
-
     end
 
-    class Activities
-      include RlmAttributeSetterExtensions
-    end
+    class Activities; include RlmAttributeSetterExtensions; end
 
-    module Trackers
-      class << self
+    module Trackers; include RlmAttributeSetterExtensions; end
 
-        # TODO: Abstract and move values to YML file
+    module IssueStatuses; include RlmAttributeSetterExtensions; end
 
-        def license
-          t = ::Tracker.find_or_initialize_by(internal_name: Setup.name_for('license'), default_status_id: IssueStatuses.inactive.id)
-
-          if t.new_record?
-            t.name = 'License'
-            t.save
-          end
-
-          return t
-        end
-
-        def license_extension
-          t = ::Tracker.find_or_initialize_by(internal_name: Setup.name_for('license_extension'), default_status_id: IssueStatuses.inactive.id)
-
-          if t.new_record?
-            t.name = 'LicenseExtension'
-            t.save
-          end
-
-          return t
-        end
-
-        def all
-          [license, license_extension]
-        end
-      end
-    end
-
-    module IssueStatuses
-      include RlmAttributeSetterExtensions
-    end
+    module IssueCustomFields; include RlmAttributeSetterExtensions; end
 
     module Workflows
 
@@ -140,7 +125,7 @@ module RLM
       class << self
 
         def license_manager_projects
-          ::Project.has_module(Setup::MODULE_NAME)
+          ::Project.has_module(Setup.module_name)
         end
 
         def default_license_manager_project
@@ -160,7 +145,7 @@ module RLM
           # Checking what needs to be done
           status = check_license_manager_project_integrity(project)
 
-          ::EnabledModule.create(project_id: project.id, name: Setup::MODULE_NAME) if status[:module] == false
+          ::EnabledModule.create(project_id: project.id, name: Setup.module_name) if status[:module] == false
 
           # Reset/Assign Trackers
           project.trackers = Trackers.all if status[:trackers] == false
@@ -175,7 +160,7 @@ module RLM
 
         def check_license_manager_project_integrity(project)
           status = {}
-          status[:module]       = project.module_enabled?(Setup::MODULE_NAME)
+          status[:module]       = project.module_enabled?(Setup.module_name)
           status[:trackers]     = (project.trackers == Trackers.all)
           status[:activities]   = (project.time_entry_activities == Activities.all)
 

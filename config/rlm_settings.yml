@@ -19,7 +19,7 @@ modules:
       identify_column: internal_name
       entries: [license, license_extension]
       additional_attributes:
-        default_status_id: 'IssueStatuses.inactive.id'
+        default_status_id: 'RLM::Setup::IssueStatuses.license_inactive.id'
         # This will run through eval(), Special case, as Trackers need a value for default status id even though using eval isn't pretty nice coding style.
         # Improvements welcome
 
@@ -31,15 +31,35 @@ modules:
     issue_custom_fields:
       class_name: IssueCustomField
       identify_column: internal_name
-      # special case here, as the entries dont just have a name, they also have a field type
       entries:
-        license_price: float
-        license_purchase_price: float
-        maintenance_pp: float
-        maintenance_purchase_pp: float
-        maintenance_date: date
-        maintenance_paid_until: date
-        maintenance_invoice_received: boolean
-        period_in_days: integer
-        customer_project_reference: integer
+        - license_price
+        - license_purchase_price
+        - maintenance_pp
+        - maintenance_purchase_pp
+        - maintenance_date
+        - maintenance_paid_until
+        - maintenance_invoice_received
+        - period_in_days
+        - customer_project_reference
+      # special case here, as the entries dont just have a name, they also have a field type and other settings
+      entry_settings:
+        license_price:
+          field_format: float
+        license_purchase_price:
+          field_format: float
+        maintenance_pp:
+          field_format: float
+        maintenance_purchase_pp:
+          field_format: float
+        maintenance_date:
+          field_format: date
+        maintenance_paid_until:
+          field_format: date
+        maintenance_invoice_received:
+          field_format: bool
+        period_in_days:
+          field_format: int
+        customer_project_reference:
+          field_format: int
+
 
