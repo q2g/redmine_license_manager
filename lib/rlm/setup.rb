@@ -57,7 +57,7 @@ module RLM
         def self.human_entry_name(entry_name, locale: I18n.locale)
           # truncated name as redmine mostly allows only 30 chars as name
           n = I18n.t(entry_name, scope: "rlm.entries.#{rlm_module_name_for_config}", locale: locale.to_s.downcase.to_sym)
-          return n.first(30)
+          return n.last(30)
         end
 
         def self.evaluated_additional_attributes

@@ -20,7 +20,7 @@ RSpec.shared_examples "RlmAttributeSetterExtensions" do
       context 'create a new entry' do
         before do
           expect(described_class.to_create_classname_from_config).to receive(:find_or_initialize_by).with(
-            described_class.identify_column.to_sym => RLM::Setup.name_for(entry_name, current_module_scope: described_class.rlm_module_name_for_config)).and_return(entry)
+            described_class.identify_column => RLM::Setup.name_for(entry_name, current_module_scope: described_class.rlm_module_name_for_config)).and_return(entry)
           expect(entry).to receive(:new_record?).and_return(true)
           expect(entry).to receive('name=').with(described_class.human_entry_name(entry_name))
           expect(entry).to receive(:save)
@@ -32,5 +32,16 @@ RSpec.shared_examples "RlmAttributeSetterExtensions" do
 
     end
   end
+
+  describe '.all' do
+    specify 'creates and persists all entries' do
+      expect(described_class.all.select {|e| e.persisted? }.size).to eq(described_class.required_entries_from_config.size)
+    end
+
+    specify 'creates all entries with expect type' do
+      expect(described_class.all.map {|e| e.class }.uniq).to match_array([described_class.to_create_classname_from_config])
+    end
+  end
+
 
 end
