@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'acts_as_list'
+gem 'colorize'
 
 # these are required in order to run the specs with 'rspec-rails' in EasyRedmine
 # use RAILS_ENV=test in order to run the specs via 'rspec' command

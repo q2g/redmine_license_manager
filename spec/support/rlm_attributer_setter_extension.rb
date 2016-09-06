@@ -12,6 +12,15 @@ RSpec.shared_examples "RlmAttributeSetterExtensions" do
     expect(described_class.to_create_classname_from_config).to eq(RLM::Setup.yaml_config['modules']['setup'][described_class.rlm_module_name_for_config]['class_name'].constantize)
   end
 
+  context('.default_data_attributes') do
+    before do
+      expect(described_class).to receive(:identify_column).and_return('column')
+      expect(RLM::Setup).to receive(:name_for).with('some_attribute', current_module_scope: described_class.rlm_module_name_for_config).and_return('value')
+    end
+
+    specify { expect(described_class.default_data_attributes('some_attribute')).to eq('column' => 'value') }
+  end
+
   described_class.required_entries_from_config.each do |entry_name|
     describe ".#{entry_name}" do
 
@@ -19,17 +28,14 @@ RSpec.shared_examples "RlmAttributeSetterExtensions" do
 
       context 'create a new entry' do
         before do
-          expect(described_class.to_create_classname_from_config).to receive(:find_or_initialize_by).with(
-            described_class.identify_column => RLM::Setup.name_for(entry_name, current_module_scope: described_class.rlm_module_name_for_config)).and_return(entry)
+          expect(described_class.to_create_classname_from_config).to receive(:find_or_initialize_by).with(described_class.combined_data_attributes(entry_name)).and_return(entry)
           expect(entry).to receive(:new_record?).and_return(true)
           expect(entry).to receive('name=').with(described_class.human_entry_name(entry_name))
           expect(entry).to receive(:save)
         end
 
         specify { expect(described_class.send(entry_name)).to  eq(entry) }
-
       end
-
     end
   end
 

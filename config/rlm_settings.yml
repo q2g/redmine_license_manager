@@ -45,8 +45,10 @@ modules:
       entry_settings:
         license_price:
           field_format: float
+          is_required: true
         license_purchase_price:
           field_format: float
+          is_required: true
         maintenance_pp:
           field_format: float
         maintenance_purchase_pp:

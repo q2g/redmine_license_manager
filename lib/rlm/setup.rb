@@ -26,6 +26,8 @@ module RLM
         yaml_config['naming_prefix']
       end
 
+
+
     end
 
     module RlmAttributeSetterExtensions
@@ -60,7 +62,11 @@ module RLM
           return n.last(30)
         end
 
-        def self.evaluated_additional_attributes
+        def self.default_data_attributes(entry_name)
+          { identify_column => Setup.name_for(entry_name, current_module_scope: self.rlm_module_name_for_config) }
+        end
+
+        def self.evaluated_additional_attributes(entry_name)
           data_attributes = {}
 
           if Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['additional_attributes'].to_a.any?
@@ -72,27 +78,21 @@ module RLM
           return data_attributes
         end
 
+        def self.combined_data_attributes(entry_name)
+          default_data_attributes(entry_name).merge(evaluated_additional_attributes(entry_name))
+        end
+
+
         def self.all
           self.required_entries_from_config.map {|e| self.send e }
         end
 
         # Dynamically defining the getter/Setter method base on the settings in yaml file
-        # Custom fields are not covered yet due to their special behavoir, like having the field_format col that makes creating them more complex
-
         self.required_entries_from_config.each do |entry_name|
           (class << base; self end).class_eval do
             define_method entry_name do
 
-              data_attributes = { identify_column => Setup.name_for(entry_name, current_module_scope: self.rlm_module_name_for_config) }
-
-              # Because of higher complexity, custom fields are handled are little bit different
-              if self.rlm_module_name_for_config == 'issue_custom_fields'
-                data_attributes.merge!(Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entry_settings'][entry_name])
-              else
-                data_attributes.merge!(self.evaluated_additional_attributes)
-              end
-
-              t = to_create_classname_from_config.find_or_initialize_by(data_attributes)
+              t = to_create_classname_from_config.find_or_initialize_by(combined_data_attributes(entry_name))
 
               if t.new_record?
                 t.name = human_entry_name(entry_name)
@@ -114,7 +114,16 @@ module RLM
 
     module IssueStatuses; include RlmAttributeSetterExtensions; end
 
-    module IssueCustomFields; include RlmAttributeSetterExtensions; end
+    module IssueCustomFields
+      include RlmAttributeSetterExtensions
+
+      class << self
+        def evaluated_additional_attributes(entry_name)
+          Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entry_settings'][entry_name].merge({'editable' => false})
+        end
+      end
+
+    end
 
     module Workflows
 
@@ -153,6 +162,9 @@ module RLM
           # Reset/Assign Activities
           project.time_entry_activities = Activities.all if status[:activities] == false
 
+          # Add eventually missing issue custom fields to the project
+          project.issue_custom_fields += IssueCustomFields.all if status[:issue_custom_fields] == false
+
           project.save
 
           return project
@@ -160,11 +172,13 @@ module RLM
 
         def check_license_manager_project_integrity(project)
           status = {}
-          status[:module]       = project.module_enabled?(Setup.module_name)
-          status[:trackers]     = (project.trackers == Trackers.all)
-          status[:activities]   = (project.time_entry_activities == Activities.all)
+          status[:module]               = project.module_enabled?(Setup.module_name)
+          status[:trackers]             = (project.trackers == Trackers.all)
+          status[:activities]           = (project.time_entry_activities == Activities.all)
 
-          status[:valid]        = !status.values.include?(false)
+          # allow more than the default setup up custom fields
+          status[:issue_custom_fields]  = (IssueCustomFields.all - project.issue_custom_fields).empty?
+          status[:valid]                = !status.values.include?(false)
 
           return status
         end
