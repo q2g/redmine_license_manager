@@ -9,7 +9,9 @@ Redmine::Plugin.register RLM::Setup.module_name do
 
   Redmine::AccessControl.map do |map|
     map.project_module RLM::Setup.module_name do |pmap|
-      pmap.permission :edit_licenses, { }
+      RLM::Setup.roles_config.each do |role_name, settings|
+        pmap.permission role_name, settings
+      end
     end
   end
 end

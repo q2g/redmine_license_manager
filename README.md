@@ -31,6 +31,13 @@ optional License Information fields
 
 ### Roles
 
+- Can view Licenses
+- Can add Licenses
+- Can view prices
+- Can view purchase prices
+
+Join existing roles in LicensePool Project to every project that is using a license from the Pool (its negative list, if nothing is set all users in the pool are allowed to see all projects)
+
 
 ## Info
 

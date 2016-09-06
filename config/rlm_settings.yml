@@ -63,5 +63,14 @@ modules:
           field_format: int
         customer_project_reference:
           field_format: int
+  roles:
+    view_licenses:
+      rlm_licenses: []
+    edit_licenses:
+      rlm_licenses: []
+    see_license_sale_price:
+      rlm_licenses: []
+    see_license_purchase_price:
+      rlm_licenses: []
 
 
