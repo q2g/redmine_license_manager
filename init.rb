@@ -9,8 +9,8 @@ Redmine::Plugin.register RLM::Setup.module_name do
 
   Redmine::AccessControl.map do |map|
     map.project_module RLM::Setup.module_name do |pmap|
-      RLM::Setup.roles_config.each do |role_name, settings|
-        pmap.permission role_name, settings
+      RLM::Setup.permissions_config.each do |permission_name, settings|
+        pmap.permission "#{RLM::Setup.naming_prefix}_#{permission_name}", settings
       end
     end
   end

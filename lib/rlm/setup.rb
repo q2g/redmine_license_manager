@@ -26,8 +26,8 @@ module RLM
         yaml_config['naming_prefix']
       end
 
-      def roles_config
-        yaml_config['roles']
+      def permissions_config
+        yaml_config['modules']['permissions']
       end
 
     end

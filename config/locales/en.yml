@@ -23,3 +23,8 @@ en:
         period_in_days: 'period in days'
         customer_project_reference: 'Customer/Project'
 
+  permission_rlm_view_licenses: 'See licenses'
+  permission_rlm_edit_licenses: 'Edit licenses'
+  permission_rlm_see_license_sale_price: 'See license sale price'
+  permission_rlm_see_license_purchase_price: 'See license purchase price'
+

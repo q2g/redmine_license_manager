@@ -63,7 +63,8 @@ modules:
           field_format: int
         customer_project_reference:
           field_format: int
-  roles:
+  permissions:
+    # all permissions are prefixed with the naming prefix
     view_licenses:
       rlm_licenses: []
     edit_licenses:
