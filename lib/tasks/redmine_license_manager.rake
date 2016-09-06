@@ -69,6 +69,15 @@ namespace :rlm do
       task :convert_to_license_manager_project => :environment do
         project = ::Project.find ENV['PROJECT_ID']
         RLM::Setup::Projects.convert_to_license_manager_project!(project)
+
+        puts "Converting #{project.name}..."
+
+        status = RLM::Setup::Projects.check_license_manager_project_integrity(project)
+
+        status.each do |key, value|
+          puts " #{value == true ? '+' : '-'} #{key}".colorize(value == true ? :green : :red)
+        end
+
       end
 
     end
