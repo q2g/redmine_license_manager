@@ -42,5 +42,37 @@ namespace :rlm do
 
     end
 
+    namespace :projects do
+
+      desc "Creates a default license manager project if it is missing"
+      task :create_default => :environment do
+        if RLM::Setup::Projects.license_manager_projects.any?
+          project = RLM::Setup::Projects.default_license_manager_project
+          puts "Default License Manager Project is: #{project.name} (ID: #{project.id})".colorize(:yellow)
+          puts ".. checking integrity"
+
+          status = RLM::Setup::Projects.check_license_manager_project_integrity(project)
+          if status == true
+            puts ".. STATUS OK".colorize(:green)
+          else
+            puts ".. STATUS NOT OK".colorize(:red)
+            puts "=> Please run 'rake rlm:setup:projects:convert_to_license_manager_project PROJECT_ID=#{project.id}' to setup data!"
+          end
+        else
+          puts "Creating default Default License Manager Project"
+          project = RLM::Setup::Projects.default_license_manager_project
+          puts "Default License Manager Project is: #{project.name} (ID: #{project.id})".colorize(:green)
+        end
+      end
+
+      desc "Conver Project with id PROJECT_ID= to a License Manager Project"
+      task :convert_to_license_manager_project => :environment do
+        project = ::Project.find ENV['PROJECT_ID']
+        RLM::Setup::Projects.convert_to_license_manager_project!(project)
+      end
+
+    end
+
+
   end
 end

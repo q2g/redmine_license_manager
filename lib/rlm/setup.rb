@@ -142,7 +142,7 @@ module RLM
             license_manager_projects.first
           else
             # Setup an inital Project
-            project = ::Project.create(name: 'Redmine License Manager')
+            project = ::Project.create(name: "Redmine License Manager #{Time.now.to_i}")
 
             convert_to_license_manager_project!(project)
 
