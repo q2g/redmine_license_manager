@@ -7,12 +7,6 @@ Redmine::Plugin.register RLM::Setup.module_name do
   description 'License Manager'
   version '0.1.0'
 
-  Redmine::AccessControl.map do |map|
-    map.project_module RLM::Setup.module_name do |pmap|
-      RLM::Setup.permissions_config.each do |permission_name, settings|
-        pmap.permission "#{RLM::Setup.naming_prefix}_#{permission_name}", settings
-      end
-    end
-  end
+  
 end
 

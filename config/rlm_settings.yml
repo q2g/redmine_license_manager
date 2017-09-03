@@ -41,6 +41,8 @@ modules:
         - maintenance_invoice_received
         - period_in_days
         - customer_project_reference
+        - license_product_name
+        - license_count
       # special case here, as the entries dont just have a name, they also have a field type and other settings
       entry_settings:
         license_price:
@@ -63,15 +65,12 @@ modules:
           field_format: int
         customer_project_reference:
           field_format: int
-  permissions:
-    # all permissions are prefixed with the naming prefix
-    view_licenses:
-      rlm_licenses: []
-    edit_licenses:
-      rlm_licenses: []
-    see_license_sale_price:
-      rlm_licenses: []
-    see_license_purchase_price:
-      rlm_licenses: []
+        license_product_name:
+          field_format: list
+          possible_values: '--'
+        license_count:
+          field_format: int  
+            
+  
 
 

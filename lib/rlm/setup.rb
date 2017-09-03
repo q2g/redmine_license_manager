@@ -127,14 +127,6 @@ module RLM
 
     end
 
-    module Workflows
-      # TODO: to discuss
-    end
-
-    module Roles
-      # TODO: to discuss - should a default role be created for admin?
-    end
-
     module Projects
 
       class << self
