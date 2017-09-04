@@ -1,12 +1,10 @@
-# All Settings for the Project are handled in the setup.rb file and the corresponding yaml file
-require File.expand_path("../lib/rlm/setup.rb", __FILE__)
-
-Redmine::Plugin.register RLM::Setup.module_name do
+Redmine::Plugin.register "redmine_license_mananger" do
   name 'Redmine License Manager'
   author 'Florian Eck for akquinet'
   description 'License Manager'
   version '0.1.0'
-
+  
+  require File.expand_path("../lib/redmine_license_manager.rb", __FILE__)
   
 end
 

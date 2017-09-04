@@ -22,8 +22,6 @@ de:
         maintenance_invoice_received: 'Wartungsrechnung erhalten'
         period_in_days: 'Periode/Tage'
         customer_project_reference: 'Kunde/Projekt'
+        license_product_name: Produktname
+        license_count: Anzahl
 
-  permission_rlm_view_licenses: 'Lizensen sehen'
-  permission_rlm_edit_licenses: 'Lizensen bearbeiten'
-  permission_rlm_see_license_sale_price: 'Lizens VK-Preis sehen'
-  permission_rlm_see_license_purchase_price: 'Lizens EK-Preis sehen'

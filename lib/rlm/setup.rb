@@ -18,10 +18,6 @@ module RLM
         [naming_prefix, current_module_scope.try(:parameterize), name.parameterize].compact.join("-")
       end
 
-      def module_name
-        yaml_config['module_name']
-      end
-
       def naming_prefix
         yaml_config['naming_prefix']
       end
@@ -93,10 +89,12 @@ module RLM
         self.required_entries_from_config.each do |entry_name|
           (class << base; self end).class_eval do
             define_method entry_name do
-
-              t = to_create_classname_from_config.find_or_initialize_by(combined_data_attributes(entry_name))
+              data = combined_data_attributes(entry_name).symbolize_keys
+              
+              t = to_create_classname_from_config.find_or_initialize_by(internal_name: data[:internal_name])
 
               if t.new_record?
+                t.assign_attributes(data)
                 t.name = human_entry_name(entry_name)
                 t.save
               end
