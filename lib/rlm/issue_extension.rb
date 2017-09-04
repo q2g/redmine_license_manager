@@ -6,10 +6,18 @@ module RLM
     included do
       before_validation :set_license_auto_subject, if: :is_license_or_extension?
       
-      def self.lef_from_serial_number(serial)
-        entries = self.joins("LEFT JOIN custom_values on customized_id = issues.id")
-          .where("custom_values.customized_type = 'Issue' AND custom_values.custom_field_id = #{::RLM::Setup::IssueCustomFields.serial_number.id}")
-          .where("custom_values.value = '#{serial}'").first
+      def self.find_by_serial_number(serial)
+        find_by_custom_field_value(serial, ::RLM::Setup::IssueCustomFields.serial_number.id)
+      end
+      
+      def self.find_by_license_product_name(product_name)
+        find_by_custom_field_value(product_name, ::RLM::Setup::IssueCustomFields.license_product_name.id)
+      end
+      
+      def self.find_by_custom_field_value(value, cf_id)
+        self.joins("LEFT JOIN custom_values on customized_id = issues.id")
+          .where("custom_values.customized_type = 'Issue' AND custom_values.custom_field_id = #{cf_id}")
+          .where("lower(custom_values.value) LIKE '%#{value.to_s.downcase}%'")
       end
       
     end
@@ -39,9 +47,16 @@ module RLM
       self.custom_field_value(::RLM::Setup::IssueCustomFields.lef.id)
     end
     
+    def serial_number
+      self.custom_field_value(::RLM::Setup::IssueCustomFields.serial_number.id)
+    end
+    
     private
     def set_license_auto_subject
       auto_subject = self.license_product_name.presence.dup
+      
+      return if self.license_product_name.blank? || self.license_product_name == "-"
+      
       if self.license_count.present? && auto_subject.present?
         auto_subject = auto_subject.gsub("[X]", self.license_count.to_s)
       end

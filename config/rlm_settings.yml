@@ -44,7 +44,9 @@ modules:
         - license_product_name
         - license_count
         - serial_number
+        - control_number
         - lef
+        
       # special case here, as the entries dont just have a name, they also have a field type and other settings
       entry_settings:
         license_price:
@@ -69,11 +71,13 @@ modules:
           field_format: int
         license_product_name:
           field_format: list
-          possible_values: '--'
+          possible_values: '-'
         license_count:
           field_format: int
         serial_number:
-          field_format: string    
+          field_format: string
+        control_number:
+          field_format: string      
         lef:
           field_format: text  
             
