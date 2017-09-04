@@ -4,7 +4,7 @@ class LefService
   def self.get_checksum(serial)
     chk = 4711
 
-    (serial+'201').split('').each  do |ch|
+    (serial.to_s+'201').split('').each  do |ch|
       chk *= 2;
       if chk >= 65536
         chk -= 65535
