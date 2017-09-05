@@ -1,20 +1,5 @@
 class LefService
   
-  
-  def self.get_checksum(serial)
-    chk = 4711
-
-    (serial.to_s+'201').split('').each  do |ch|
-      chk *= 2;
-      if chk >= 65536
-        chk -= 65535
-      end
-      chk ^= ch.ord
-    end
-    
-    chk.to_s
-  end
-  
   # can return 
   # - nil   - serial not found
   # - fase  - worng checksum
@@ -63,6 +48,21 @@ class LefService
     end
     return result
   end
+  
+  def self.get_checksum(serial)
+    chk = 4711
+
+    (serial.to_s+'201').split('').each  do |ch|
+      chk *= 2;
+      if chk >= 65536
+        chk -= 65535
+      end
+      chk ^= ch.ord
+    end
+    
+    chk.to_s
+  end
+  
   
   
   
