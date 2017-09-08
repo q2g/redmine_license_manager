@@ -47,17 +47,20 @@ modules:
       # special case here, as the entries dont just have a name, they also have a field type and other settings
       entry_settings:
         license_price:
-          field_format: float
+          field_format: amount
           is_required: true
         license_purchase_price:
-          field_format: float
-          is_required: false
+          field_format: amount
+          is_required: true
         maintainance_price:
-          field_format: float
+          field_format: amount
+          is_required: true
         maintainance_purchase_price:
-          field_format: float
+          field_format: amount
+          is_required: true
         maintainance_date:
           field_format: date
+          is_required: true
         maintainance_paid_until:
           field_format: date
         maintainance_invoice_received:
