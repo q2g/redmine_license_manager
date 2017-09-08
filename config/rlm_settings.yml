@@ -51,7 +51,7 @@ modules:
           is_required: true
         license_purchase_price:
           field_format: float
-          is_required: true
+          is_required: false
         maintainance_price:
           field_format: float
         maintainance_purchase_price:

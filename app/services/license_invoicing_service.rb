@@ -78,7 +78,7 @@ class LicenseInvoicingService
 
         # hier wird die Verrechnung der Lizenz erstellt
         if main_paid_date.blank? then
-          result.push("Lizenz berechnen #"+iss.id.to_s+" "+iss.subject+" "+lic.to_s)
+          result.push("Lizenz berechnen #" + iss.id.to_s + " " +iss.subject+ " " + iss.license_price.to_s)
           
           te = TimeEntry.new(
             project_id: iss.project_id,

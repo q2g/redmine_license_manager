@@ -5,6 +5,7 @@ module RLM
     
     included do
       before_validation :set_license_auto_subject, if: :is_license_or_extension?
+      before_validation :set_maintainance_price,   if: :is_license_or_extension?
       
       def self.find_by_serialnumber(serial)
         find_by_custom_field_value(serial, ::RLM::Setup::IssueCustomFields.serialnumber.id)
@@ -60,6 +61,13 @@ module RLM
       
       self.subject = auto_subject if auto_subject.present?
     end
+    
+    def set_maintainance_price
+      pp = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.license_price.internal_name }
+      mp = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.maintainance_price.internal_name }
+      mp.value = (pp.value.to_f*0.2).to_s if mp.value.blank?
+    end
+      
     
   end
 end
