@@ -61,7 +61,7 @@ module RLM
         end
 
         def self.default_data_attributes(entry_name)
-          { identify_column => Setup.name_for(entry_name, current_module_scope: self.rlm_module_name_for_config) }
+          { internal_name: Setup.name_for(entry_name, current_module_scope: self.rlm_module_name_for_config) }
         end
 
         def self.evaluated_additional_attributes(entry_name)
@@ -124,64 +124,75 @@ module RLM
       end
 
     end
-
-    module Projects
+    
+    module TimeEntryCustomFields
+      include RlmAttributeSetterExtensions
 
       class << self
-
-        def license_manager_projects
-          ::Project.has_module(Setup.module_name)
+        def evaluated_additional_attributes(entry_name)
+          Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entry_settings'][entry_name].merge({'editable' => false})
         end
-
-        def default_license_manager_project
-          if license_manager_projects.any?
-            license_manager_projects.first
-          else
-            # Setup an inital Project
-            project = ::Project.create(name: "Redmine License Manager #{Time.now.to_i}")
-
-            convert_to_license_manager_project!(project)
-
-            return license_manager_projects.first
-          end
-        end
-
-        def convert_to_license_manager_project!(project)
-          # Checking what needs to be done
-          status = check_license_manager_project_integrity(project)
-
-          ::EnabledModule.create(project_id: project.id, name: Setup.module_name) if status[:module] == false
-
-          # Reset/Assign Trackers
-          project.trackers = Trackers.all if status[:trackers] == false
-
-          # Reset/Assign Activities
-          project.time_entry_activities = Activities.all if status[:activities] == false
-
-          # Add eventually missing issue custom fields to the project
-          project.issue_custom_fields += IssueCustomFields.all if status[:issue_custom_fields] == false
-
-          project.save
-
-          return project
-        end
-
-        def check_license_manager_project_integrity(project)
-          status = {}
-          status[:module]               = project.module_enabled?(Setup.module_name)
-          status[:trackers]             = (project.trackers == Trackers.all)
-          status[:activities]           = (project.time_entry_activities == Activities.all)
-
-          # allow more than the default setup up custom fields
-          status[:issue_custom_fields]  = (IssueCustomFields.all - project.issue_custom_fields).empty?
-          status[:valid]                = !status.values.include?(false)
-
-          return status
-        end
-
       end
 
     end
+
+    #module Projects
+    #
+    #  class << self
+    #
+    #    def license_manager_projects
+    #      ::Project.has_module(Setup.module_name)
+    #    end
+    #
+    #    def default_license_manager_project
+    #      if license_manager_projects.any?
+    #        license_manager_projects.first
+    #      else
+    #        # Setup an inital Project
+    #        project = ::Project.create(name: "Redmine License Manager #{Time.now.to_i}")
+    #
+    #        convert_to_license_manager_project!(project)
+    #
+    #        return license_manager_projects.first
+    #      end
+    #    end
+    #
+    #    def convert_to_license_manager_project!(project)
+    #      # Checking what needs to be done
+    #      status = check_license_manager_project_integrity(project)
+    #
+    #      ::EnabledModule.create(project_id: project.id, name: Setup.module_name) if status[:module] == false
+    #
+    #      # Reset/Assign Trackers
+    #      project.trackers = Trackers.all if status[:trackers] == false
+    #
+    #      # Reset/Assign Activities
+    #      project.time_entry_activities = Activities.all if status[:activities] == false
+    #
+    #      # Add eventually missing issue custom fields to the project
+    #      project.issue_custom_fields += IssueCustomFields.all if status[:issue_custom_fields] == false
+    #
+    #      project.save
+    #
+    #      return project
+    #    end
+    #
+    #    def check_license_manager_project_integrity(project)
+    #      status = {}
+    #      status[:module]               = project.module_enabled?(Setup.module_name)
+    #      status[:trackers]             = (project.trackers == Trackers.all)
+    #      status[:activities]           = (project.time_entry_activities == Activities.all)
+    #
+    #      # allow more than the default setup up custom fields
+    #      status[:issue_custom_fields]  = (IssueCustomFields.all - project.issue_custom_fields).empty?
+    #      status[:valid]                = !status.values.include?(false)
+    #
+    #      return status
+    #    end
+    #
+    #  end
+    #
+    #end
 
   end
 end

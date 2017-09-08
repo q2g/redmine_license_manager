@@ -6,8 +6,8 @@ module RLM
     included do
       before_validation :set_license_auto_subject, if: :is_license_or_extension?
       
-      def self.find_by_serial_number(serial)
-        find_by_custom_field_value(serial, ::RLM::Setup::IssueCustomFields.serial_number.id)
+      def self.find_by_serialnumber(serial)
+        find_by_custom_field_value(serial, ::RLM::Setup::IssueCustomFields.serialnumber.id)
       end
       
       def self.find_by_license_product_name(product_name)
@@ -35,20 +35,16 @@ module RLM
     end
     
     # accessing custom fields
-    def license_product_name
-      self.custom_field_value(::RLM::Setup::IssueCustomFields.license_product_name.id)
-    end
-    
-    def license_count
-      self.custom_field_value(::RLM::Setup::IssueCustomFields.license_count.id)
-    end
-    
-    def lef
-      self.custom_field_value(::RLM::Setup::IssueCustomFields.lef.id)
-    end
-    
-    def serial_number
-      self.custom_field_value(::RLM::Setup::IssueCustomFields.serial_number.id)
+    # generating handy getters and setters
+    RLM::Setup::IssueCustomFields.required_entries_from_config.each do |cf_name|
+      
+      define_method(cf_name) do
+        self.custom_field_value(::RLM::Setup::IssueCustomFields.send(cf_name).id)
+      end
+      
+      define_method("#{cf_name}=") do |val|
+        self.custom_value_for(::RLM::Setup::IssueCustomFields.send(cf_name).id).value = val
+      end
     end
     
     private

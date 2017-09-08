@@ -29,8 +29,8 @@ namespace :rlm do
           if entry.present?
             warn = "   [WARN]"
             setup_module.combined_data_attributes(entry_name).each do |key, value|
-              if entry[key] != value
-                puts "#{warn}: attribute '#{key.bold}' is #{entry[key].inspect.bold} - should be #{value.inspect.bold}"
+              if entry[key] != value && key != 'possible_values'
+                puts "#{warn}: attribute '#{key}' is #{entry[key].inspect} - should be #{value.inspect}"
               end
             end
           end
@@ -43,6 +43,8 @@ namespace :rlm do
     
     desc "Setup required Trackers, CustomFields, Status for License Manager"
     task :run => :environment do
+      # Setting up activities
+      RLM::Setup::Activities.all
       
       # Setting up trackers
       trackers = RLM::Setup::Trackers.all
@@ -51,6 +53,12 @@ namespace :rlm do
       RLM::Setup::IssueCustomFields.all.each do |custom_field|
         custom_field.trackers = trackers
         custom_field.save
+      end
+      
+      # Setting up Custom fields for Issue
+      RLM::Setup::TimeEntryCustomFields.all.each do |custom_field|
+        # custom_field.trackers = trackers
+#         custom_field.save
       end
       
       # Setting up Issue Status
@@ -99,4 +107,14 @@ namespace :rlm do
 
 
   end
+
+  namespace :invoicing do
+    
+    task :licenses => :environment do
+      issues = Issue.where('(tracker_id = 6 or tracker_id = 9) and (status_id = 8 or status_id = 9) and  start_date <= ?', DateTime.now)
+      LicenseInvoicingService.new(issues).invoice_licenses
+    end
+    
+  end
+  
 end

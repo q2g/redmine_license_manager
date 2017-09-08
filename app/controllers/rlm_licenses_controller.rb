@@ -12,7 +12,7 @@ class RlmLicensesController < ApplicationController
       render status: '404', text: 'NOT FOUND'
     elsif result == false  
       log_lef_access!('NOT_OK')
-      render status: '500', text: 'DENIED'
+      render status: '403', text: 'DENIED'
     else
       log_lef_access!('OK')
       render status: '200', text: result.lef
@@ -25,7 +25,7 @@ class RlmLicensesController < ApplicationController
     if RlmLefAccessLog.check_if_ip_allowed(request.ip)
       return true
     else
-      render status: '500', text: 'BLOCKED'
+      render status: '403', text: 'BLOCKED'
     end
   end
   

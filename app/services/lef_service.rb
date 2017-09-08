@@ -6,7 +6,7 @@ class LefService
   # - Issue - everthing is fine
   def self.issue_from_serial_and_checksum(serial, checksum)
     if get_checksum(serial) == checksum
-      Issue.find_by_serial_number(serial).first
+      Issue.find_by_serialnumber(serial).first
     else
       return false
     end
@@ -26,8 +26,8 @@ class LefService
     result = []
 
     Issue.find_by_license_product_name.where(tracker_id: ::RLM::Setup::Trackers.license.id, status_id: RLM::Setup::IssueStatuses.license_active.id ).each do |iss|
-      serial  = iss.serial_number
-      lef     = iss.lev
+      serial  = iss.serialnumber
+      lef     = iss.license_lev
 
       if serial.to_i > 1000000000000000
         new_lef = read_lef_from_qlik(serial)
@@ -41,8 +41,7 @@ class LefService
           result.push("Update LEF for Issues ID: #"+iss.id.to_s);
           
           # storing new lef
-          iss.update_attributes(custom_field_values: {::RLM::Setup::IssueCustomFields.lef.id => new_lef})
-
+          iss.update_attributes(custom_field_values: {::RLM::Setup::IssueCustomFields.license_lef.id => new_lef})
         end
       end
     end

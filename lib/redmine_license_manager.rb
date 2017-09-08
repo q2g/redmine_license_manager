@@ -7,4 +7,5 @@ require File.expand_path("../../app/services/lef_service.rb", __FILE__)
 
 Rails.application.config.after_initialize do
   Issue.send(:include, RLM::IssueExtension)
+  TimeEntry.send(:include, RLM::TimeEntryExtension)
 end  

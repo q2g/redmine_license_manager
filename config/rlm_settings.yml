@@ -11,12 +11,10 @@ modules:
     #
     activities:
       class_name: TimeEntryActivity
-      identify_column: internal_name
       entries: [license, maintenance]
 
     trackers:
       class_name: Tracker
-      identify_column: internal_name
       entries: [license, license_extension]
       additional_attributes:
         default_status_id: 'RLM::Setup::IssueStatuses.license_inactive.id'
@@ -25,27 +23,26 @@ modules:
 
     issue_statuses:
       class_name: IssueStatus
-      identify_column: rlm_internal_name
       entries: [license_active, license_inactive]
 
     issue_custom_fields:
       class_name: IssueCustomField
-      identify_column: internal_name
       entries:
         - license_price
         - license_purchase_price
-        - maintenance_pp
-        - maintenance_purchase_pp
+        - maintenance_price
+        - maintenance_purchase_price
         - maintenance_date
         - maintenance_paid_until
         - maintenance_invoice_received
-        - period_in_days
+        - maintenance_period
         - customer_project_reference
+        - customer_invoice_reference
         - license_product_name
         - license_count
-        - serial_number
-        - control_number
-        - lef
+        - serialnumber
+        - controlnumber
+        - license_lef
         
       # special case here, as the entries dont just have a name, they also have a field type and other settings
       entry_settings:
@@ -55,9 +52,9 @@ modules:
         license_purchase_price:
           field_format: float
           is_required: true
-        maintenance_pp:
+        maintenance_price:
           field_format: float
-        maintenance_purchase_pp:
+        maintenance_purchase_price:
           field_format: float
         maintenance_date:
           field_format: date
@@ -65,22 +62,32 @@ modules:
           field_format: date
         maintenance_invoice_received:
           field_format: bool
-        period_in_days:
+        maintenance_period:
           field_format: int
         customer_project_reference:
           field_format: int
+        customer_invoice_reference:
+          field_format: int  
         license_product_name:
           field_format: list
           possible_values: '-'
         license_count:
           field_format: int
-        serial_number:
+        serialnumber:
           field_format: string
-        control_number:
+        controlnumber:
           field_format: string      
-        lef:
-          field_format: text  
-            
-  
-
-
+        license_lef:
+          field_format: text
+    
+    time_entry_custom_fields:
+      class_name: TimeEntryCustomField
+      entries:
+        - amount
+        - customer_invoice_reference
+        
+      entry_settings:
+        amount:
+          field_format: float
+        customer_invoice_reference:
+          field_format: string
