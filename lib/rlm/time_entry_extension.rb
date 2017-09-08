@@ -12,7 +12,8 @@ module RLM
       end
       
       define_method("#{cf_name}=") do |val|
-        self.custom_value_for(::RLM::Setup::TimeEntryCustomFields.send(cf_name).id).value = val
+        self.custom_field_values = {::RLM::Setup::TimeEntryCustomFields.send(cf_name).id => val}
+        self.save
       end
     end
     

@@ -93,7 +93,6 @@ class LicenseInvoicingService
           
           te.amount = lic.to_s
           te.customer_invoice_reference = inv_ref
-          te.save
 
           if iss.start_date.mday== 1
             main_paid_date=iss.start_date.prev_day
@@ -101,9 +100,7 @@ class LicenseInvoicingService
             main_paid_date=iss.start_date.end_of_month
           end
 
-          iss=Issue.find(iss.id)
-          iss.custom_value_for(@cf_issue_maintenance_paid_until).value=main_paid_date.to_s
-          iss.save
+          iss.maintenance_paid_until = main_paid_date.to_s
         end
 
         # hier wird die Wartung Berechnet
@@ -115,32 +112,27 @@ class LicenseInvoicingService
           user:User.find(iss.assigned_to_id),
           comments: iss.subject + " Wartung "+main_paid_date.next_day.to_s+" bis "+main_date.to_s,
           spent_on:Date.today,
+
+          # TODO: is that right?
           activity_id: RLM::Setup::Activities.maintainance.id,
           hours:0.0,
           easy_is_billable:true)
 
           result.push("Wartung berechnen #"+iss.id.to_s+" "+te.comments)
 
-          if te.save then
+          if te.save
 
-            te=TimeEntry.find(te.id)
-
-            te.custom_value_for(@cf_timeentry_amount).value=((main.to_f*months)/12.0).round(2).to_s
-            te.custom_value_for(@cf_timeentry_customer_invoice_reference).value=inv_ref
-
-            if te.save then
-              iss=Issue.find(iss.id)
-              iss.custom_value_for(@cf_issue_maintenance_paid_until).value=main_date.to_s
-              iss.save
-            else
-              result.push(te.errors.full_messages)
-            end
+            te.amount                     = ((main.to_f*months)/12.0).round(2).to_s
+            te.customer_invoice_reference = inv_ref
+            
+            iss.maintenance_paid_until = main_date.to_s
           else
             result.push(te.errors.full_messages)
           end
         end
 
         # Lizenz / Wartungstickets nach der Berechnung immer an Konrad zuweisen.
+        # TODO: dont use static ids here
         if iss.assigned_to_id != 3 then
           iss.assigned_to_id=3
           iss.save
