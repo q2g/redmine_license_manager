@@ -4,9 +4,13 @@ class LefService
   # - nil   - serial not found
   # - fase  - worng checksum
   # - Issue - everthing is fine
-  def self.issue_from_serial_and_checksum(serial, checksum)
-    if get_checksum(serial) == checksum
-      Issue.find_by_serialnumber(serial).first
+  def self.issue_from_serial_and_checksum(params = {})
+    [:serial, :chk].each do |p|
+      raise ArgumentError, "Missing mandatory param :#{p}" if params[p].nil?
+    end
+    
+    if get_checksum(params.except(:chk, :controller, :action, :locale, :id)) == params[:chk]
+      Issue.find_by_serialnumber(params[:serial]).first
     else
       return false
     end
@@ -14,7 +18,7 @@ class LefService
   
   # function to fetch the LEF from Qlik
   def self.read_lef_from_qlik(serial)
-    url = URI.parse("http://lef1.qliktech.com/lefupdate/update_lef.asp?serial=#{serial}&user=&org=&cause=201&chk=#{get_checksum(serial)}")
+    url = URI.parse("http://lef1.qliktech.com/lefupdate/update_lef.asp?serial=#{serial}&chk=#{get_checksum(serial: serial)}")
 
     req = Net::HTTP::Get.new(url.to_s)
     res = Net::HTTP.start(url.host, url.port) {|http| http.request(req) }
@@ -48,10 +52,10 @@ class LefService
     return result
   end
   
-  def self.get_checksum(serial)
+  def self.get_checksum(params = {})
     chk = 4711
 
-    (serial.to_s+'201').split('').each  do |ch|
+    params.values.join.split('').each  do |ch|
       chk *= 2;
       if chk >= 65536
         chk -= 65535

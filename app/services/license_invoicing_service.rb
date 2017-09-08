@@ -5,6 +5,10 @@ class LicenseInvoicingService
   
   def initialize(issues)
     @issues = issues
+      .where(status_id: [RLM::Setup::IssueStatuses.license_active.id, RLM::Setup::IssueStatuses.license_ordered.id])
+      .where(tracker_id: [RLM::Setup::Trackers.license.id, RLM::Setup::Trackers.license_extension.id])
+      .where("start_date <= ?", DateTime.now)
+      
     @result       = []
   end
   
@@ -14,16 +18,16 @@ class LicenseInvoicingService
       issues.each do |iss|
 
         # if this license is over the due_date set the status to closed
-        if !iss.due_date.blank? && iss.due_date < Date.today then
-          # TODO: is this correct
-          iss.status_id = RLM::Setup::IssueStatus.inactive.id
+        if iss.due_date.present? && iss.due_date < Date.today
+          # TODO: find correct closed status
+          iss.status_id = RLM::Setup::IssueStatus.license_inactive.id
           iss.save
 
           next
         end
         
         # getting maintaince period in days
-        main_period = iss.maintenance_period.nil? ? 360 : iss.maintenance_period.to_i
+        main_period = iss.maintenance_period.nil? ? 365 : iss.maintenance_period.to_i
         
         # getting maintaince price  
         main        = iss.maintenance_price
@@ -41,9 +45,9 @@ class LicenseInvoicingService
         inv_ref = iss.customer_invoice_reference
 
         # wenn das Ticket niemanden Zugewiesen ist Konrad zuweisen
-        # TODO: Dont use static id here
-        if iss.assigned_to_id.blank? then
-          iss.assigned_to_id=3
+        # TODO: Put this into a config field later
+        if iss.assigned_to_id.blank?
+          iss.assigned_to_id = 3
           iss.save
         end
 

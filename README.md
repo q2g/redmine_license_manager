@@ -48,3 +48,42 @@ It is licensed under GNU GENERAL PUBLIC LICENSE.
 It has been tested with EasyRedmine, but should also work for regular Redmine installations. If you find any bugs, please file an issue or create a PR.
 
 
+
+
+
+
+Lizenz Anlegen
+LizenzePreis 1000
+WartungPreis 200 (before_validation), wenn Wartung blank -> Wartung = Lizenzpreise*0,2->20%
+
+WartungsDatum 31.08.2018
+Beginn 01.09.2017
+
+Periode = 365
+
+WartungBeazhl Bis -> leer
+
+-> LAUD
+
+2 Timeentier
+1. Lizenz mit Amoujt 1000
+2. Wartung von 01.09-31.08.2018 mit 200€
+
+
+Wartungsdatum nun auf 30.09.2018 setzten
+
+-> LAAUF
+
+1 Timeentry mit : Wartung 1.09-30.09.2018 mit Amount 200/12
+
+Waretungdatum auf 31.08.2017 & Warztung bezahl bis 31.08.2017 setzen
+
+-> LAUD
+Timeentry:
+  - Wartung von 01.09-31.08.2018 mit 200€
+
+
+
+
+
+

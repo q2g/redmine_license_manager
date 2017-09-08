@@ -50,9 +50,9 @@ module RLM
     
     private
     def set_license_auto_subject
-      auto_subject = self.license_product_name.presence.dup
-      
       return if self.license_product_name.blank? || self.license_product_name == "-"
+      
+      auto_subject = self.license_product_name.presence.dup
       
       if self.license_count.present? && auto_subject.present?
         auto_subject = auto_subject.gsub("[X]", self.license_count.to_s)

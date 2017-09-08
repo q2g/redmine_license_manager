@@ -24,7 +24,7 @@ en:
         customer_project_reference: 'Customer/Project'
         license_product_name: Productname
         license_count: Count
-        serial_number: Serial Number
-        lef: LEF
+        serialnumber: Serial Number
+        license_lef: LEF
 
 

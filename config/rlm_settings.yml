@@ -23,7 +23,7 @@ modules:
 
     issue_statuses:
       class_name: IssueStatus
-      entries: [license_active, license_inactive]
+      entries: [license_active, license_ordered, license_inactive]
 
     issue_custom_fields:
       class_name: IssueCustomField
@@ -67,7 +67,8 @@ modules:
         customer_project_reference:
           field_format: int
         customer_invoice_reference:
-          field_format: int  
+          field_format: string
+          editable: true  
         license_product_name:
           field_format: list
           possible_values: '-'

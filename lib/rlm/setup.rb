@@ -15,7 +15,7 @@ module RLM
       end
 
       def name_for(name, current_module_scope: nil)
-        [naming_prefix, current_module_scope.try(:parameterize), name.parameterize].compact.join("-")
+        [current_module_scope.try(:parameterize).gsub("_custom_fields", ""), name.parameterize].compact.join("_")
       end
 
       def naming_prefix
@@ -119,7 +119,7 @@ module RLM
 
       class << self
         def evaluated_additional_attributes(entry_name)
-          Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entry_settings'][entry_name].merge({'editable' => false})
+          Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entry_settings'][entry_name].merge({'editable' => true})
         end
       end
 
@@ -130,7 +130,7 @@ module RLM
 
       class << self
         def evaluated_additional_attributes(entry_name)
-          Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entry_settings'][entry_name].merge({'editable' => false})
+          Setup.yaml_config['modules']['setup'][rlm_module_name_for_config]['entry_settings'][entry_name].merge({'editable' => true})
         end
       end
 

@@ -111,8 +111,7 @@ namespace :rlm do
   namespace :invoicing do
     
     task :licenses => :environment do
-      issues = Issue.where('(tracker_id = 6 or tracker_id = 9) and (status_id = 8 or status_id = 9) and  start_date <= ?', DateTime.now)
-      LicenseInvoicingService.new(issues).invoice_licenses
+      LicenseInvoicingService.new(Issue.all).invoice_licenses
     end
     
   end
