@@ -11,7 +11,7 @@ modules:
     #
     activities:
       class_name: TimeEntryActivity
-      entries: [license, maintenance]
+      entries: [license, maintainance]
 
     trackers:
       class_name: Tracker
@@ -30,12 +30,12 @@ modules:
       entries:
         - license_price
         - license_purchase_price
-        - maintenance_price
-        - maintenance_purchase_price
-        - maintenance_date
-        - maintenance_paid_until
-        - maintenance_invoice_received
-        - maintenance_period
+        - maintainance_price
+        - maintainance_purchase_price
+        - maintainance_date
+        - maintainance_paid_until
+        - maintainance_invoice_received
+        - maintainance_period
         - customer_project_reference
         - customer_invoice_reference
         - license_product_name
@@ -52,17 +52,17 @@ modules:
         license_purchase_price:
           field_format: float
           is_required: true
-        maintenance_price:
+        maintainance_price:
           field_format: float
-        maintenance_purchase_price:
+        maintainance_purchase_price:
           field_format: float
-        maintenance_date:
+        maintainance_date:
           field_format: date
-        maintenance_paid_until:
+        maintainance_paid_until:
           field_format: date
-        maintenance_invoice_received:
+        maintainance_invoice_received:
           field_format: bool
-        maintenance_period:
+        maintainance_period:
           field_format: int
         customer_project_reference:
           field_format: int

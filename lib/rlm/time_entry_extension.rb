@@ -13,7 +13,7 @@ module RLM
       
       define_method("#{cf_name}=") do |val|
         self.custom_field_values = {::RLM::Setup::TimeEntryCustomFields.send(cf_name).id => val}
-        self.save
+        self.save(validate: false) # => to make shure the custom field value is stored at any case
       end
     end
     

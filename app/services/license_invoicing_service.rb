@@ -13,7 +13,8 @@ class LicenseInvoicingService
   end
   
   def invoice_licenses
-    begin
+
+    #begin
 
       issues.each do |iss|
 
@@ -27,19 +28,17 @@ class LicenseInvoicingService
         end
         
         # getting maintaince period in days
-        main_period = iss.maintenance_period.nil? ? 365 : iss.maintenance_period.to_i
+        main_period = iss.maintainance_period.nil? ? 365 : iss.maintainance_period.to_i
         
         # getting maintaince price  
-        main        = iss.maintenance_price
-        # getting license price  
-        lic         = iss.license_price
+        main        = iss.maintainance_price
         
         # getting maintainance dates
         main_date     = iss.maintainance_date.to_date
         main_date_org = iss.maintainance_date.to_date
         
         # Maintaince Paid until
-        main_paid_date = iss.maintenance_paid_until.try(:to_date)
+        main_paid_date = iss.maintainance_paid_until.presence.try(:to_date)
         
         # Invoice reference      
         inv_ref = iss.customer_invoice_reference
@@ -81,7 +80,7 @@ class LicenseInvoicingService
         if main_paid_date.blank? then
           result.push("Lizenz berechnen #"+iss.id.to_s+" "+iss.subject+" "+lic.to_s)
           
-          te = TimeEntry.create(
+          te = TimeEntry.new(
             project_id: iss.project_id,
             issue_id: iss.id,
             user:User.find(iss.assigned_to_id),
@@ -92,10 +91,10 @@ class LicenseInvoicingService
             hours:0.0,
             easy_is_billable:true
           )
-          
-          te.reload
-          
-          te.amount = lic.to_s
+
+          te.save(validate: false)
+
+          te.amount = iss.license_price
           te.customer_invoice_reference = inv_ref
 
           if iss.start_date.mday== 1
@@ -104,7 +103,7 @@ class LicenseInvoicingService
             main_paid_date=iss.start_date.end_of_month
           end
 
-          iss.maintenance_paid_until = main_paid_date.to_s
+          iss.maintainance_paid_until = main_paid_date.to_s
         end
 
         # hier wird die Wartung Berechnet
@@ -124,12 +123,12 @@ class LicenseInvoicingService
 
           result.push("Wartung berechnen #"+iss.id.to_s+" "+te.comments)
 
-          if te.save
-
+          if te.save(validate: false)
+            
             te.amount                     = ((main.to_f*months)/12.0).round(2).to_s
             te.customer_invoice_reference = inv_ref
             
-            iss.maintenance_paid_until = main_date.to_s
+            iss.maintainance_paid_until = main_date.to_s
           else
             result.push(te.errors.full_messages)
           end
@@ -144,10 +143,10 @@ class LicenseInvoicingService
 
       end
 
-    rescue Exception => msg
-      # display the system generated error message  
-      result.push(msg)
-    end
+    #rescue Exception => msg
+    #  # display the system generated error message  
+    #  result.push(msg)
+    #end
 
     return result
 
