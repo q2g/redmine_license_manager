@@ -116,4 +116,8 @@ namespace :rlm do
     
   end
   
+  task :sync_lef => :environment do
+    LefService.sync_lefs_for_qlik
+  end
+  
 end
