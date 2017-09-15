@@ -26,5 +26,7 @@ en:
         license_count: Count
         serialnumber: Serial Number
         license_lef: LEF
-
+    errors:
+      parent_not_a_license: Parent issue must be a 'License'
+      no_parent_found: Tickets of Type 'License Extension' must have a parent ticket of type 'License'
 

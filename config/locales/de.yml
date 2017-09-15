@@ -26,4 +26,7 @@ de:
         license_count: Anzahl
         serialnumber: Seriennummer
         license_lef: LEF
+    errors:
+      parent_not_a_license: Das übergeordnete Ticket ist nicht vom Typ 'Lizenz'
+      no_parent_found: Tickets vom Typ 'Lizenzerweiterung' müssen einem Ticket vom Typ 'Lizenz' untergeordnet sein      
 

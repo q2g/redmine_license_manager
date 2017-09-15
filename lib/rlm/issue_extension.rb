@@ -4,8 +4,8 @@ module RLM
     extend ActiveSupport::Concern
     
     included do
-      before_validation :set_license_auto_subject, if: :is_license_or_extension?
-      before_validation :set_maintainance_price,   if: :is_license_or_extension?
+      before_validation :set_license_auto_subject, :set_maintainance_price, if: :is_license_or_extension?
+      before_save :check_parent_issue_tracker,   if: :is_license_extension?
       
       def self.find_by_serialnumber(serial)
         find_by_custom_field_value(serial, ::RLM::Setup::IssueCustomFields.serialnumber.id)
@@ -66,6 +66,18 @@ module RLM
       pp = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.license_price.internal_name }
       mp = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.maintainance_price.internal_name }
       mp.value = (pp.value.to_f*0.2).to_s if mp.value.blank?
+    end
+    
+    def check_parent_issue_tracker
+      if self.parent.nil?
+        self.errors.add(:tracker_id, I18n.t('rlm.errors.no_parent_found'))
+        return false
+      elsif !self.parent.is_license?
+        self.errors.add(:tracker_id, I18n.t('rlm.errors.parent_not_a_license'))
+        return false
+      else
+        return true
+      end
     end
       
     
