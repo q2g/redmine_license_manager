@@ -36,7 +36,6 @@ modules:
         - maintainance_paid_until
         - maintainance_invoice_received
         - maintainance_period
-        - customer_project_reference
         - customer_invoice_reference
         - license_product_name
         - license_count
@@ -65,8 +64,6 @@ modules:
         maintainance_invoice_received:
           field_format: bool
         maintainance_period:
-          field_format: int
-        customer_project_reference:
           field_format: int
         customer_invoice_reference:
           field_format: string
