@@ -54,7 +54,6 @@ modules:
           is_required: true
         maintainance_price:
           field_format: amount
-          is_required: true
         maintainance_purchase_price:
           field_format: amount
           is_required: true
@@ -92,6 +91,6 @@ modules:
         
       entry_settings:
         amount:
-          field_format: float
+          field_format: amount
         customer_invoice_reference:
           field_format: string
