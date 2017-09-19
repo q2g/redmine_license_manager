@@ -17,7 +17,7 @@ modules:
       class_name: Tracker
       entries: [license, license_extension]
       additional_attributes:
-        default_status_id: 'RLM::Setup::IssueStatuses.license_inactive.id'
+        default_status_id: 'RLM::Setup::IssueStatuses.license_active.id'
         # This will run through eval(), Special case, as Trackers need a value for default status id even though using eval isn't pretty nice coding style.
         # Improvements welcome
 
