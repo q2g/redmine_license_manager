@@ -1,4 +1,7 @@
 en:
+  button_rlm_create_invoicing: "Create Invoicing"
+  label_rlm_non_license_tickets_selected: "You have non-license tickets selected"
+  label_rlm_closed_tickets_selected: "You have closed tickets selected"
   rlm:
     # Map to the 'entries' values for given module/setup type
     entries:

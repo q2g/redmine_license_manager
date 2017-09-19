@@ -19,6 +19,11 @@ class RlmLicensesController < ApplicationController
     end  
   end
   
+  def invoice_licenses
+    LicenseInvoicingService.new(Issue.where(id: params[:issue_ids])).invoice_licenses
+    redirect_to :back
+  end
+  
   private
   
   def check_access_permission
