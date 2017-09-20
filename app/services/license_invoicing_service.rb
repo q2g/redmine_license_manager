@@ -1,7 +1,7 @@
 class LicenseInvoicingService
   
   attr_reader :issues
-  attr_accessor :result
+  attr_accessor :result, :errors
   
   def initialize(issues)
     @issues = issues
@@ -10,6 +10,7 @@ class LicenseInvoicingService
       .where("start_date <= ?", DateTime.now)
       
     @result       = []
+    @errors       = []
   end
   
   def invoice_licenses
@@ -130,7 +131,7 @@ class LicenseInvoicingService
             
             iss.maintainance_paid_until = main_date.to_s
           else
-            result.push(te.errors.full_messages)
+            errors.push(te.errors.full_messages)
           end
         end
 

@@ -5,6 +5,7 @@ module RLM
     
     included do
       before_validation :set_license_auto_subject, :set_maintainance_price, if: :is_license_or_extension?
+      before_validation :load_parent_values, if: :is_license_extension?
       before_save :check_parent_issue_tracker,   if: :is_license_extension?
       
       def self.find_by_serialnumber(serial)
@@ -55,11 +56,17 @@ module RLM
       
       auto_subject = self.license_product_name.presence.dup
       
-      if self.license_count.present? && auto_subject.present?
-        auto_subject = auto_subject.gsub("[X]", self.license_count.to_s)
-      end
+      if auto_subject.match('[X]') && self.license_count.blank?
+        self.errors.add(:license_count, I18n.t('rlm.errors.license_count_blank'))
+        return false
+      else  
+        
+        if self.license_count.present? && auto_subject.present?
+          auto_subject = auto_subject.gsub("[X]", self.license_count.to_s)
+        end
       
-      self.subject = auto_subject if auto_subject.present?
+        self.subject = auto_subject if auto_subject.present?
+      end  
     end
     
     def set_maintainance_price
@@ -79,7 +86,13 @@ module RLM
         return true
       end
     end
-      
+    
+    def load_parent_values
+      if self.parent
+        self.maintainance_date = self.parent.maintainance_date if self.maintainance_date.blank?
+        self.maintainance_period = self.parent.maintainance_period if self.maintainance_period.blank?  
+      end
+    end  
     
   end
 end

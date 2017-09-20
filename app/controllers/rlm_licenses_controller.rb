@@ -20,7 +20,11 @@ class RlmLicensesController < ApplicationController
   end
   
   def invoice_licenses
-    LicenseInvoicingService.new(Issue.where(id: params[:issue_ids])).invoice_licenses
+    invoicing = LicenseInvoicingService.new(Issue.where(id: params[:issue_ids])).invoice_licenses
+    invoicing.invoice_licenses
+    
+    flash[:notice] = invoicing.result.join("<br />").html_safe if invoicing.result.any?
+    flash[:error]  = invoicing.errors.join("<br />").html_safe if invoicing.errors.any?
     redirect_to :back
   end
   

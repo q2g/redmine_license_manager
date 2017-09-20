@@ -32,4 +32,5 @@ en:
     errors:
       parent_not_a_license: Parent issue must be a 'License'
       no_parent_found: Tickets of Type 'License Extension' must have a parent ticket of type 'License'
+      license_count_blank: License count is required
 
