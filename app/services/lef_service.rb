@@ -29,7 +29,7 @@ class LefService
   def self.sync_lefs_for_qlik
     result = []
 
-    Issue.find_by_license_product_name.where(tracker_id: ::RLM::Setup::Trackers.license.id, status_id: RLM::Setup::IssueStatuses.license_active.id ).each do |iss|
+    Issue.find_by_license_product_name("Qlik").where(tracker_id: ::RLM::Setup::Trackers.license.id, status_id: RLM::Setup::IssueStatuses.license_active.id ).each do |iss|
       serial  = iss.serialnumber
       lef     = iss.license_lev
 

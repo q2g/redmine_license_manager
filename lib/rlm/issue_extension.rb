@@ -89,7 +89,7 @@ module RLM
     
     def load_parent_values
       if self.parent
-        self.maintainance_date = self.parent.maintainance_date if self.maintainance_date.blank?
+        self.maintainance_date   = self.parent.maintainance_date   if self.maintainance_date.blank?
         self.maintainance_period = self.parent.maintainance_period if self.maintainance_period.blank?  
       end
     end  
