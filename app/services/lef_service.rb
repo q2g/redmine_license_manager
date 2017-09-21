@@ -31,7 +31,7 @@ class LefService
 
     Issue.find_by_license_product_name("Qlik").where(tracker_id: ::RLM::Setup::Trackers.license.id, status_id: RLM::Setup::IssueStatuses.license_active.id ).each do |iss|
       serial  = iss.serialnumber
-      lef     = iss.license_lev
+      lef     = iss.license_lef
 
       if serial.to_i > 1000000000000000
         new_lef = read_lef_from_qlik(serial)
