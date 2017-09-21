@@ -1,6 +1,6 @@
 class RlmLicensesController < ApplicationController
   
-  skip_before_filter :require_login, :require_admin
+  skip_filter *_process_action_callbacks.map(&:filter), only: [:index]
   
   before_filter :check_access_permission
   
