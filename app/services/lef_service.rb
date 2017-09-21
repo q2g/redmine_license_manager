@@ -49,6 +49,7 @@ class LefService
         end
       end
     end
+    puts result.join("\n")
     return result
   end
   
