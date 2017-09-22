@@ -5,8 +5,7 @@ module RLM
     
     included do
       before_validation :set_license_auto_subject, :set_maintainance_price, if: :is_license_or_extension?
-      before_validation :load_parent_values, if: :is_license_extension?
-      before_save :check_parent_issue_tracker,   if: :is_license_extension?
+      before_save :check_parent_issue_tracker, :load_parent_values,  if: :is_license_extension?
       
       def self.find_by_serialnumber(serial)
         find_by_custom_field_value(serial, ::RLM::Setup::IssueCustomFields.serialnumber.id)
