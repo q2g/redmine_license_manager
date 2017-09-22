@@ -38,7 +38,8 @@ class LefService
 
         #check if the lef is really different. 
         # Qlik changes sometimes just the order  
-        has_changed = (new_lef.strip.split("\n") - lef.strip.split("\n")).any?
+        # the last line will always change so it is exccluded from the comparing
+        has_changed = (new_lef.strip.split("\n")[0..-2] - lef.strip.split("\n")[0..-2]).any?
 
         if has_changed && !new_lef.blank? && !new_lef.include?("INTERNAL_LEF_SERVER_ERROR")
           iss.init_journal(User.find_by_id(2))
