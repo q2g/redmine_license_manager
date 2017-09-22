@@ -5,6 +5,7 @@ module RLM
     
     included do
       before_validation :set_license_auto_subject, :set_maintainance_price, if: :is_license_or_extension?
+      before_validation :load_parent_values,  if: :is_license_extension?
       before_save :check_parent_issue_tracker, :load_parent_values,  if: :is_license_extension?
       
       def self.find_by_serialnumber(serial)
@@ -69,9 +70,13 @@ module RLM
     end
     
     def set_maintainance_price
-      pp = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.license_price.internal_name }
+      lp = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.license_price.internal_name }
       mp = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.maintainance_price.internal_name }
-      mp.value = (pp.value.to_f*0.2).to_s if mp.value.blank?
+      mp.value = (lp.value.to_f*0.2).to_s if mp.value.blank?
+      
+      lp_p = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.license_purchase_price.internal_name }
+      mp_p = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.maintainance_purchase_price.internal_name }
+      mp_p.value = (lp_p.value.to_f*0.2).to_s if mp_p.value.blank?
     end
     
     def check_parent_issue_tracker
@@ -87,7 +92,12 @@ module RLM
     end
     
     def load_parent_values
-      if self.parent
+
+      if self.parent || self.parent_issue_id.present?
+        if self.parent.nil?
+          self.parent = Issue.find(self.parent_issue_id)
+        end
+        
         self.maintainance_date   = self.parent.maintainance_date   if self.maintainance_date.blank?
         self.maintainance_period = self.parent.maintainance_period if self.maintainance_period.blank?  
       end
