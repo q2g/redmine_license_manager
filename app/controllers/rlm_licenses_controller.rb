@@ -20,7 +20,7 @@ class RlmLicensesController < ApplicationController
   end
   
   def invoice_licenses
-    invoicing = LicenseInvoicingService.new(Issue.where(id: params[:issue_ids])).invoice_licenses
+    invoicing = LicenseInvoicingService.new(Issue.where(id: params[:issue_ids]))
     invoicing.invoice_licenses
     
     flash[:notice] = invoicing.result.join("<br />").html_safe if invoicing.result.any?
