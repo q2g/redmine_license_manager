@@ -22,6 +22,7 @@ module RLM
           .where("lower(custom_values.value) LIKE '%#{value.to_s.downcase}%'")
       end
       
+      attr_accessor :skip_parent_callbacks
     end
     
     def is_license?
@@ -45,7 +46,8 @@ module RLM
       end
       
       define_method("#{cf_name}=") do |val|
-        self.custom_field_values = {::RLM::Setup::IssueCustomFields.send(cf_name).id => val}
+        self.custom_field_values = { ::RLM::Setup::IssueCustomFields.send(cf_name).id => val}
+        self.skip_parent_callbacks = true
         self.save
       end
     end
@@ -80,6 +82,7 @@ module RLM
     end
     
     def check_parent_issue_tracker
+      return if skip_parent_callbacks
       if self.parent.nil?
         self.errors.add(:tracker_id, I18n.t('rlm.errors.no_parent_found'))
         return false
@@ -92,7 +95,7 @@ module RLM
     end
     
     def load_parent_values
-
+      return if skip_parent_callbacks
       if self.parent || self.parent_issue_id.present?
         if self.parent.nil?
           self.parent = Issue.find(self.parent_issue_id)

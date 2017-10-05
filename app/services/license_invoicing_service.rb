@@ -142,7 +142,7 @@ class LicenseInvoicingService
         rescue Exception => e
           errors.push("ISSUE #{iss.id} failed")
           errors.push(e.try(:exception))
-          errors.push(e.try(:message))
+          errors.push(e.try(:backtrace).try(:join, "\n"))
         end
 
       end
