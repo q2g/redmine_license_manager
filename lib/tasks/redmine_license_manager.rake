@@ -111,7 +111,19 @@ namespace :rlm do
   namespace :invoicing do
     
     task :licenses => :environment do
-      LicenseInvoicingService.new(Issue.all).invoice_licenses
+      invoicing = LicenseInvoicingService.new(Issue.all)
+      invoicing.invoice_licenses
+      
+      if invoicing.result.any?
+        puts "SUCCESS:"
+        puts invoicing.result.join("\n")
+      end 
+      
+      if invoicing.errors.any?
+        puts "ERRORS:"
+        puts invoicing.errors.join("\n")
+      end  
+      
     end
     
   end
