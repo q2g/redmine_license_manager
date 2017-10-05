@@ -20,9 +20,9 @@ class LicenseInvoicingService
           # if this license is over the due_date set the status to closed
           if iss.due_date.present? && iss.due_date < Date.today
             # TODO: find correct closed status
-            iss.status_id = RLM::Setup::IssueStatus.license_inactive.id
+            iss.status_id = RLM::Setup::IssueStatuses.license_inactive.id
             iss.save
-
+            result.push("Issue #{iss.id} set to inactive")
             next
           end
         
@@ -71,7 +71,7 @@ class LicenseInvoicingService
           end
 
           if main_date_org != main_date then
-            main_date_cfv.value=main_date
+            iss.maintainance_date = main_date
             iss.save
           end
 
