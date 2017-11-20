@@ -21,7 +21,6 @@ Rails.application.config.paths['app/views'].unshift(File.expand_path("../../app/
 
 # Extend test suite
 require "pry"
-require "factory_girl"
 Dir.glob(File.expand_path("../support/*.rb", __FILE__)).each {|factory_rb| require factory_rb }
 
 
