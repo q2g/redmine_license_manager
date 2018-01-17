@@ -1,5 +1,6 @@
 en:
   button_rlm_create_invoicing: "Create Invoicing"
+  button_rlm_update_lef: Update LEF
   label_rlm_non_license_tickets_selected: "You have non-license tickets selected"
   label_rlm_closed_tickets_selected: "You have closed tickets selected"
   rlm:

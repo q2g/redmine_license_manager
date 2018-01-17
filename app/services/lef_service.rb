@@ -26,10 +26,16 @@ class LefService
     return res.body
   end
   
-  def self.sync_lefs_for_qlik
+  def self.sync_lefs_for_qlik(issue_ids = [])
     result = []
-
-    Issue.find_by_license_product_name("Qlik").where(tracker_id: ::RLM::Setup::Trackers.license.id, status_id: RLM::Setup::IssueStatuses.license_active.id ).each do |iss|
+    issues = Issue.find_by_license_product_name("Qlik").where(tracker_id: ::RLM::Setup::Trackers.license.id, status_id: RLM::Setup::IssueStatuses.license_active.id )
+    
+    if issue_ids.any?
+      issues = issues.where(id: issue_ids)
+    end
+    result << "Updating #{issues.size} licenses"
+    
+    issues.each do |iss|
       serial  = iss.serialnumber
       lef     = iss.license_lef
 
@@ -48,6 +54,8 @@ class LefService
           # storing new lef
           iss.update_attributes(custom_field_values: {::RLM::Setup::IssueCustomFields.license_lef.id => new_lef})
         end
+      else
+        result << "- cant update ##{issue.id}"
       end
     end
     puts result.join("\n")

@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   
   namespace :rlm_licenses do
     patch :invoice_licenses
+    patch :update_lef
   end
   
 end

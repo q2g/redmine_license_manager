@@ -28,6 +28,12 @@ class RlmLicensesController < ApplicationController
     redirect_to :back
   end
   
+  def update_lef
+    result = LefService.sync_lefs_for_qlik(params[:issue_ids])
+    flash[:notice] = result.join("<br />")
+    redirect_to :back
+  end
+  
   private
   
   def check_access_permission

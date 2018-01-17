@@ -1,5 +1,6 @@
 de:
   button_rlm_create_invoicing: "Abrechnung erstellen"
+  button_rlm_update_lef: LEF aktualisieren
   label_rlm_non_license_tickets_selected: "Sie haben auch nicht-Lizens Tickets gewählt"
   label_rlm_closed_tickets_selected: "Sie haben auch geschlossene Tickets gewählt"
   rlm:
