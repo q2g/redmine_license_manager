@@ -1,0 +1,9 @@
+<a>Lizens splitten</a>
+<ul>
+  <li class="split_license_form">
+    <%= form_for :split_license, url: "#" do |f| %>
+      <%= f.number_field :license_count, min: 1, max: issue.license_count.to_i-1, value: 1 %>
+      <%= f.submit 'OK' %>
+    <% end %>
+  </li>
+</ul>

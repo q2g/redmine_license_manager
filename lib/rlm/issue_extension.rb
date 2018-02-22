@@ -52,6 +52,31 @@ module RLM
       end
     end
     
+    def create_splitted_license(n=1)
+      ratio = n/self.license_count.to_f
+      new_count = self.license_count.to_i - n
+      
+      cloned_values = self.attributes.slice('tracker_id', 'project_id', 'category_id', 'author_id', 'parent_id', 'root_id')
+      
+      cloned_values[:license_count] = n
+      
+      %w(maintainance_date maintainance_paid_until maintainance_invoice_received maintainance_period customer_invoice_reference license_product_name serialnumber controlnumber license_lef).each do |v|
+        cloned_values[v.to_sym] = self.send(v)
+      end
+      
+      %w(license_price license_purchase_price maintainance_price maintainance_purchase_price).each do |p|
+        cloned_values[p.to_sym] = self.send(p).to_f*ratio
+        self.send("#{p}=", self.send(p).to_f*(1-ratio))
+      end
+      
+      new_license = Issue.new(cloned_values)
+      new_license.send(:set_license_auto_subject)
+      new_license.subject = "#{self.subject} [Split #{n}]" if new_license.subject.blank?
+      if new_license.save
+        self.save
+      end
+    end  
+    
     private
     def set_license_auto_subject
       return if self.license_product_name.blank? || self.license_product_name == "-"
@@ -104,7 +129,9 @@ module RLM
         self.maintainance_date   = self.parent.maintainance_date   if self.maintainance_date.blank?
         self.maintainance_period = self.parent.maintainance_period if self.maintainance_period.blank?  
       end
-    end  
+    end
+    
+    
     
   end
 end
