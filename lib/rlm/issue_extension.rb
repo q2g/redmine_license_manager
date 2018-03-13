@@ -99,6 +99,7 @@ module RLM
       cloned_values = self.attributes.slice('tracker_id', 'project_id', 'category_id', 'author_id', 'parent_id', 'root_id')
       
       cloned_values[:license_count] = n
+      cloned_values[:status_id] = self.status_id
       
       %w(maintainance_date maintainance_paid_until maintainance_invoice_received maintainance_period customer_invoice_reference license_product_name serialnumber controlnumber license_lef).each do |v|
         cloned_values[v.to_sym] = self.send(v)

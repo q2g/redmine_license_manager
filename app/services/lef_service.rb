@@ -55,7 +55,7 @@ class LefService
           iss.update_attributes(custom_field_values: {::RLM::Setup::IssueCustomFields.license_lef.id => new_lef})
         end
       else
-        result << "- cant update ##{issue.id}"
+        result << "- cant update ##{iss.id}"
       end
     end
     puts result.join("\n")
