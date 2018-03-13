@@ -1,13 +1,17 @@
 de:
   button_rlm_create_invoicing: "Abrechnung erstellen"
   button_rlm_update_lef: LEF aktualisieren
+  button_rlm_merge_license: Lizenzen zusammenführen
+  button_rlm_split_license: Lizenz splitten
   label_rlm_non_license_tickets_selected: "Sie haben auch nicht-Lizens Tickets gewählt"
   label_rlm_closed_tickets_selected: "Sie haben auch geschlossene Tickets gewählt"
+  label_rlm_confirm_merge: Möchten Sie diese Einträge wirklich zusammenführen? Dies kann nicht rückgänging gemacht werden.
+  
   rlm:
     # Map to the 'entries' values for given module/setup type
     entries:
       activities:
-        license: 'Lizens'
+        license: 'Lizenz'
         maintenance: 'Wartung'
       trackers:
         license: 'Lizens'

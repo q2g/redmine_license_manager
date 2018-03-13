@@ -2,7 +2,10 @@ en:
   button_rlm_create_invoicing: "Create Invoicing"
   button_rlm_update_lef: Update LEF
   label_rlm_non_license_tickets_selected: "You have non-license tickets selected"
+  button_rlm_merge_license: Merge licenses
+  button_rlm_split_license: Split license
   label_rlm_closed_tickets_selected: "You have closed tickets selected"
+  label_rlm_confirm_merge: Do you really want to merge these licenses? This cant be undone.
   rlm:
     # Map to the 'entries' values for given module/setup type
     entries:

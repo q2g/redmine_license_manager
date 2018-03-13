@@ -34,6 +34,26 @@ class RlmLicensesController < ApplicationController
     redirect_to :back
   end
   
+  def merge
+    new_license = Issue.merge_license_extensions(params[:issue_ids], User.current)
+    if new_license.present? && new_license.errors.empty?
+      redirect_to issue_path(new_license)
+    else
+      redirect_to :back
+    end
+  end
+  
+  def split
+    issue = Issue.find(params[:id])
+    new_license = issue.create_splitted_license(params[:split_license][:license_count], User.current)
+    if new_license.persisted?
+      redirect_to issue_path(new_license)
+    else
+      flash[:error] = new_license.errors.full_messages
+      redirect_to :back
+    end
+  end
+  
   private
   
   def check_access_permission

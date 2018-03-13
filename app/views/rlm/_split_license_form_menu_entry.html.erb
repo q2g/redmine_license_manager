@@ -1,7 +1,7 @@
-<a>Lizens splitten</a>
+<a><%= l(:button_rlm_split_license) %></a>
 <ul>
   <li class="split_license_form">
-    <%= form_for :split_license, url: "#" do |f| %>
+    <%= form_for :split_license, url: {controller: 'rlm_licenses', action: 'split', id: issue.id } do |f| %>
       <%= f.number_field :license_count, min: 1, max: issue.license_count.to_i-1, value: 1 %>
       <%= f.submit 'OK' %>
     <% end %>

@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   namespace :rlm_licenses do
     patch :invoice_licenses
     patch :update_lef
+    patch :merge
+    post :split
   end
   
 end
