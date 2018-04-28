@@ -28,7 +28,6 @@ optional License Information fields
 - Control Number
 - LEF (license enabling file)
 
-
 ### Roles
 
 - Can view Licenses
