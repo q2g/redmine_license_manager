@@ -21,28 +21,16 @@ class LefService
 
     uri = URI.parse("http://lef1.qliktech.com/lefupdate/update_lef.aspx?serial=#{serial}&chk=#{get_checksum(serial: serial)}")
     request = Net::HTTP::Get.new(uri)
-    request["Accept-Language"] = "en,de-DE;q=0.9,de;q=0.8,en-US;q=0.7"
-    request["Upgrade-Insecure-Requests"] = "1"
-    request["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"
-    request["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
-    request["Cache-Control"] = "max-age=0"
-    request["Cookie"] = "ASPSESSIONIDCADBQDQR=KECDKJNBCLCBNPDKFKBOINDE"
-    request["Connection"] = "keep-alive"
-
-    req_options = {
-      use_ssl: uri.scheme == "https",
-    }
 
     response = Net::HTTP.start(uri.host, uri.port) {|http| http.request(request) }
 
-#    url = URI.parse("http://lef1.qliktech.com/lefupdate/update_lef.asp?serial=#{serial}^&chk=#{get_checksum(serial: serial)}")
-#    Rails.logger.error url.to_s
-#    Rails.logger.error "*****########********"
-#    req = Net::HTTP::Get.new(url.to_s)
-#    res = Net::HTTP.start(url.host, url.port) {|http| http.request(req) }
     Rails.logger.error response.body
-
-    return response.body
+    case response.code
+    when "500", "404", "403"
+      return nil
+    else
+      return response.body
+    end  
   end
   
   def self.sync_lefs_for_qlik(issue_ids = [])
@@ -58,8 +46,7 @@ class LefService
       serial  = iss.serialnumber
       lef     = iss.license_lef
 
-      if serial.to_i > 1000000000000000
-        new_lef = read_lef_from_qlik(serial)
+      if serial.to_i > 1000000000000000 && (new_lef = read_lef_from_qlik(serial)).present?
 
         #check if the lef is really different. 
         # Qlik changes sometimes just the order  
