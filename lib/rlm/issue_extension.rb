@@ -9,6 +9,7 @@ module RLM
       before_validation :set_license_auto_subject, :set_maintainance_price, if: :is_license_or_extension?
       before_validation :load_parent_values,  if: :is_license_extension?
       before_save :check_parent_issue_tracker, :load_parent_values,  if: :is_license_extension?
+      after_save :set_easy_helpdesk_project_matching, if: :is_license_or_extension?
       
       def self.find_by_serialnumber(serial)
         find_by_custom_field_value(serial, ::RLM::Setup::IssueCustomFields.serialnumber.id)
@@ -129,7 +130,19 @@ module RLM
       %w(maintainance_period maintainance_date maintainance_paid_until license_product_name maintainance_period).map {|s| self.send(s) }.join("-")
     end 
     
+    def set_easy_helpdesk_project_matching
+      if (ehp = self.project.try(:easy_helpdesk_project)) && ehp.mail_domain_for_licenses.present? && self.serialnumber.present?
+        project_setting_data = {
+          easy_helpdesk_project_id: ehp.id, email_field: 'to', 
+          domain_name: "#{self.serialnumber}@#{ehp.mail_domain_for_licenses}"
+        }
+        
+        EasyHelpdeskProjectMatching.find_or_create_by(project_setting_data)
+      end
+    end
+    
     private
+    
     def set_license_auto_subject
       return if self.license_product_name.blank? || self.license_product_name == "-"
       
@@ -151,6 +164,7 @@ module RLM
     def set_maintainance_price
       lp = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.license_price.internal_name }
       mp = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.maintainance_price.internal_name }
+      return if mp.nil? || lp.nil?
       mp.value = (lp.value.to_f*0.2).to_s if mp.value.blank?
       
       lp_p = self.custom_field_values.detect {|f| f.custom_field.internal_name == ::RLM::Setup::IssueCustomFields.license_purchase_price.internal_name }
