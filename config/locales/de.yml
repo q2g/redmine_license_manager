@@ -6,7 +6,12 @@ de:
   label_rlm_non_license_tickets_selected: "Sie haben auch nicht-Lizens Tickets gewählt"
   label_rlm_closed_tickets_selected: "Sie haben auch geschlossene Tickets gewählt"
   label_rlm_confirm_merge: Möchten Sie diese Einträge wirklich zusammenführen? Dies kann nicht rückgänging gemacht werden.
+  label_easy_helpdesk_license_domain: "Domain für Lizenz-Mails"
   
+  activerecord:
+    attributes:
+      easy_helpdesk_project:
+        mail_domain_for_licenses: Maildomain
   rlm:
     # Map to the 'entries' values for given module/setup type
     entries:

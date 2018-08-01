@@ -6,6 +6,13 @@ en:
   button_rlm_split_license: Split license
   label_rlm_closed_tickets_selected: "You have closed tickets selected"
   label_rlm_confirm_merge: Do you really want to merge these licenses? This cant be undone.
+  label_easy_helpdesk_license_domain: "Domain for License Mails"
+  
+  activerecord:
+    attributes:
+      easy_helpdesk_projects:
+        mail_domain_for_licenses: Maildomain
+    
   rlm:
     # Map to the 'entries' values for given module/setup type
     entries:

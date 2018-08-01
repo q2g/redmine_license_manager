@@ -1,6 +1,8 @@
 module Rlm
   class Hooks < Redmine::Hook::ViewListener
-
+    
+    render_on :view_easy_helpdesk_project_settings_bottom, :partial => 'projects/settings/easy_helpdesk_mail_domain_for_licenses'
+    
     def view_issues_context_menu_end(context = {})
       
       has_licenses            = context[:issues].detect {|i| i.is_license_or_extension?}.present?
