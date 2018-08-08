@@ -11,7 +11,7 @@ de:
   activerecord:
     attributes:
       easy_helpdesk_project:
-        mail_domain_for_licenses: Maildomain
+        mail_domain_for_licenses: Maildomain (example.com)
   rlm:
     # Map to the 'entries' values for given module/setup type
     entries:

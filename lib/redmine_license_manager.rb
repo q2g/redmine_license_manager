@@ -11,4 +11,5 @@ Rails.application.config.after_initialize do
   Rails.application.config.filter_parameters += [:checksum]
   Issue.send(:include, RLM::IssueExtension)
   TimeEntry.send(:include, RLM::TimeEntryExtension)
+  EasyHelpdeskProject.safe_attributes 'mail_domain_for_licenses'
 end  
