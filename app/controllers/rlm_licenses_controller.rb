@@ -1,6 +1,6 @@
 class RlmLicensesController < ApplicationController
   
-  skip_filter *_process_action_callbacks.map(&:filter), only: [:index]
+  skip_filter *_process_action_callbacks.map(&:filter), only: [:index, :get_lefs_json]
   
   before_filter :check_access_permission
   
@@ -17,6 +17,12 @@ class RlmLicensesController < ApplicationController
       log_lef_access!('OK')
       render status: '200', text: result.license_lef
     end  
+  end
+  
+  def get_lefs_json
+    @result = ::LefService.issue_lefs_as_jsonp(params)
+    
+    render template: "rlm/get_lefs_json", format: :js
   end
   
   def invoice_licenses
@@ -57,7 +63,7 @@ class RlmLicensesController < ApplicationController
   private
   
   def check_access_permission
-    if RlmLefAccessLog.check_if_ip_allowed(request.ip)
+    if RlmLefAccessLog.check_if_ip_allowed(request.ip) || Rails.env.development?
       return true
     else
       render status: '403', text: 'BLOCKED'

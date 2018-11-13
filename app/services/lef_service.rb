@@ -16,6 +16,36 @@ class LefService
     end
   end
   
+  def self.issue_lefs_as_jsonp(params = {})
+    [:serial, :chk, :callback].each do |p|
+      raise ArgumentError, "Missing mandatory param :#{p}" if params[p].nil?
+    end
+    
+    json_status = {
+      success: false,
+      status: 'unknown',
+      status_code: 200,
+      licenses: []
+    }
+    
+    if get_checksum(params.except(:chk, :controller, :action, :locale, :callback, :id)) == params[:chk] || Rails.env.development?
+      issues = Issue.find_by_serialnumber(params[:serial])
+      if issues.empty?
+        json_status[:status] = 'no licenses found'
+        json_status[:status_code] = 404
+      else
+        json_status[:status]   = 'ok'
+        json_status[:licenses] = issues.map {|i| i.license_lef.split(/[\r\n]/).map(&:strip).join(" ") }
+        json_status[:success]  = true
+      end
+    else
+      json_status[:status] = 'checksum validation failed'
+      json_status[:status_code] = 403
+    end
+    
+    return json_status.to_json
+  end
+  
   # function to fetch the LEF from Qlik
   def self.read_lef_from_qlik(serial)
 

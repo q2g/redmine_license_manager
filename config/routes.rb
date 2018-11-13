@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   
-  #get   "/getlef/:serial/:checksum" 
   get "/lefupdate/update_lef.asp" => "rlm_licenses#index", as: :get_lef
+  get "/lefupdate/update_lef.json" => "rlm_licenses#get_lefs_json", as: :get_lef_json
   
   namespace :rlm_licenses do
     patch :invoice_licenses
