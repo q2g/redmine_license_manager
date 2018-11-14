@@ -21,7 +21,6 @@ class RlmLicensesController < ApplicationController
   
   def get_lefs_json
     @result = ::LefService.issue_lefs_as_jsonp(params)
-    
     render template: "rlm/get_lefs_json", format: :js
   end
   
@@ -63,11 +62,15 @@ class RlmLicensesController < ApplicationController
   private
   
   def check_access_permission
-    if RlmLefAccessLog.check_if_ip_allowed(request.ip) || Rails.env.development?
-      return true
-    else
-      render status: '403', text: 'BLOCKED'
-    end
+    # TODO: currently disabled - check if it should be enabled again
+    # florianeck - Wed Nov 14 13:40:44 CET 2018
+    #if RlmLefAccessLog.check_if_ip_allowed(request.ip) || Rails.env.development?
+    #  return true
+    #else
+    #  render status: '403', text: 'BLOCKED'
+    #end
+    RlmLefAccessLog.check_if_ip_allowed(request.ip)
+    return true
   end
   
   def log_lef_access!(status = 'OK')
