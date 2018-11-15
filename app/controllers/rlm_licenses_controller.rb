@@ -22,7 +22,7 @@ class RlmLicensesController < ApplicationController
   def get_lefs_json
     @result = ::LefService.issue_lefs_as_jsonp(params)
     #response.headers['Access-Control-Allow-Origin'] = '*'
-    render template: "rlm/get_lefs_json"
+    render template: "rlm/get_lefs_json", layout: nil
   end
   
   def invoice_licenses
