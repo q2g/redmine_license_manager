@@ -21,7 +21,10 @@ class RlmLicensesController < ApplicationController
   
   def get_lefs_json
     @result = ::LefService.issue_lefs_as_jsonp(params)
-    #response.headers['Access-Control-Allow-Origin'] = '*'
+    
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Content-Type']                = "application/json; charset=UTF-8"
+    
     render template: "rlm/get_lefs_json", layout: nil
   end
   
