@@ -35,7 +35,7 @@ class LefService
         json_status[:status_code] = 404
       else
         json_status[:status]   = 'ok'
-        json_status[:licenses] = issues.map {|i| i.license_lef.split(/[\r\n]/).map(&:strip).join(" ") }
+        json_status[:licenses] = issues.map {|i| i.license_lef }
         json_status[:success]  = true
       end
     else
