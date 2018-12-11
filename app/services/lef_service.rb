@@ -53,7 +53,7 @@ class LefService
     request = Net::HTTP::Get.new(uri)
 
     response = Net::HTTP.start(uri.host, uri.port) {|http| http.request(request) }
-
+    Rails.logger.error "http://lef1.qliktech.com/lefupdate/update_lef.aspx?serial=#{serial}&chk=#{get_checksum(serial: serial)}"
     Rails.logger.error response.body
     case response.code
     when "500", "404", "403"
@@ -100,7 +100,7 @@ class LefService
   
   def self.get_checksum(params = {})
     chk = 4711
-    params.slice('serial').values.join.split('').each  do |ch|
+    params.slice(:serial).values.join.split('').each  do |ch|
       chk *= 2;
       if chk >= 65536
         chk -= 65535
