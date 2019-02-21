@@ -100,7 +100,7 @@ class LefService
   
   def self.get_checksum(params = {})
     chk = 4711
-    params.slice('serial').values.join.split('').each  do |ch|
+    params.slice(:serial).values.join.split('').each  do |ch|
       chk *= 2;
       if chk >= 65536
         chk -= 65535
