@@ -53,7 +53,7 @@ class LefService
     request = Net::HTTP::Get.new(uri)
 
     response = Net::HTTP.start(uri.host, uri.port) {|http| http.request(request) }
-
+    Rails.logger.error "http://lef1.qliktech.com/lefupdate/update_lef.aspx?serial=#{serial}&chk=#{get_checksum(serial: serial)}"
     Rails.logger.error response.body
     case response.code
     when "500", "404", "403"
