@@ -7,12 +7,14 @@ en:
   label_rlm_closed_tickets_selected: "You have closed tickets selected"
   label_rlm_confirm_merge: Do you really want to merge these licenses? This cant be undone.
   label_easy_helpdesk_license_domain: "Domain for License Mails"
-  
+  label_rlm_default_user_id: License
+  label_rlm_default_user_id_info: "Licenses will be assigned to %{user} by default"
+
   activerecord:
     attributes:
       easy_helpdesk_projects:
-        mail_domain_for_licenses: Maildomain (example.com) 
-    
+        mail_domain_for_licenses: Maildomain (example.com)
+
   rlm:
     # Map to the 'entries' values for given module/setup type
     entries:

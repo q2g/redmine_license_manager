@@ -1,18 +1,18 @@
 class LicenseInvoicingService
-  
+
   attr_reader :issues
   attr_accessor :result, :errors
-  
+
   def initialize(issues)
     @issues = issues
       .where(status_id: [RLM::Setup::IssueStatuses.license_active.id, RLM::Setup::IssueStatuses.license_ordered.id])
       .where(tracker_id: [RLM::Setup::Trackers.license.id, RLM::Setup::Trackers.license_extension.id])
       .where("start_date <= ?", DateTime.now)
-      
+
     @result       = []
     @errors       = []
   end
-  
+
   def invoice_licenses
 
       issues.each do |iss|
@@ -25,27 +25,25 @@ class LicenseInvoicingService
             result.push("Issue #{iss.id} set to inactive")
             next
           end
-        
+
           # getting maintaince period in days
           main_period = iss.maintainance_period.nil? ? 365 : iss.maintainance_period.to_i
-        
-          # getting maintaince price  
+
+          # getting maintaince price
           main        = iss.maintainance_price
-        
+
           # getting maintainance dates
           main_date     = iss.maintainance_date.to_date
           main_date_org = iss.maintainance_date.to_date
-        
+
           # Maintaince Paid until
           main_paid_date = iss.maintainance_paid_until.presence.try(:to_date)
-        
-          # Invoice reference      
+
+          # Invoice reference
           inv_ref = iss.customer_invoice_reference
 
-          # wenn das Ticket niemanden Zugewiesen ist Konrad zuweisen
-          # TODO: Put this into a config field later
           if iss.assigned_to_id.blank?
-            iss.assigned_to_id = 3
+            iss.assigned_to_id = Setting.plugin_redmine_license_manager['rlm_default_user_id']
             iss.save
           end
 
@@ -78,7 +76,7 @@ class LicenseInvoicingService
           # hier wird die Verrechnung der Lizenz erstellt
           if main_paid_date.blank? then
             result.push("Lizenz berechnen #" + iss.id.to_s + " " +iss.subject+ " " + iss.license_price.to_s)
-          
+
             te = TimeEntry.new(
               project_id: iss.project_id,
               issue_id: iss.id,
@@ -123,10 +121,10 @@ class LicenseInvoicingService
             result.push("Wartung berechnen #"+iss.id.to_s+" "+te.comments)
 
             if te.save(validate: false)
-            
+
               te.amount                     = ((main.to_f*months)/12.0).round(2).to_s
               te.customer_invoice_reference = inv_ref
-            
+
               iss.maintainance_paid_until = main_date.to_s
             else
               errors.push(te.errors.full_messages)
@@ -147,11 +145,11 @@ class LicenseInvoicingService
 
       end
 
-    
+
     return result
 
   end
 
-    
+
 end
 
