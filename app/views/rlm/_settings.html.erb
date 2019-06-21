@@ -1,0 +1,9 @@
+<p>
+  <%= content_tag(:label, l(:label_rlm_default_user_id)) %>
+  <%= select_tag('settings[rlm_default_user_id]',
+    options_for_select(User.all.map {|u| [u.name, u.id]},
+                    :selected => @settings['rlm_default_user_id'].to_i)) %>
+  <em class="info">
+    <%=  l(:label_rlm_default_user_id_info, user: User.find_by(id: @settings['rlm_default_user_id']).try(:name)) %>
+  </em>
+</p>

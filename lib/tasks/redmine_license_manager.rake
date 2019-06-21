@@ -40,27 +40,27 @@ namespace :rlm do
         puts "---------------------\n"
       end
     end
-    
+
     desc "Setup required Trackers, CustomFields, Status for License Manager"
     task :run => :environment do
       # Setting up activities
       RLM::Setup::Activities.all
-      
+
       # Setting up trackers
       trackers = RLM::Setup::Trackers.all
-      
+
       # Setting up Custom fields for Issue
       RLM::Setup::IssueCustomFields.all.each do |custom_field|
         custom_field.trackers = trackers
         custom_field.save
       end
-      
+
       # Setting up Custom fields for Issue
       RLM::Setup::TimeEntryCustomFields.all.each do |custom_field|
         # custom_field.trackers = trackers
 #         custom_field.save
       end
-      
+
       # Setting up Issue Status
       RLM::Setup::IssueStatuses.all
     end
@@ -109,27 +109,48 @@ namespace :rlm do
   end
 
   namespace :invoicing do
-    
+
     task :licenses => :environment do
       invoicing = LicenseInvoicingService.new(Issue.all)
       invoicing.invoice_licenses
-      
+
       if invoicing.result.any?
         puts "SUCCESS:"
         puts invoicing.result.join("\n")
-      end 
-      
+      end
+
       if invoicing.errors.any?
         puts "ERRORS:"
         puts invoicing.errors.join("\n")
-      end  
-      
+      end
+
     end
-    
+
   end
-  
+
   task :sync_lef => :environment do
     LefService.sync_lefs_for_qlik
   end
-  
+
+  desc "Set all license issues from USER_ID to currently set default user id"
+  task :reassign_license_user => :environment do
+    default_id = Setting.plugin_redmine_license_manager['rlm_default_user_id']
+    default_user = User.find_by(id: default_id)
+    raise "No License user set" if default_user.nil?
+
+    user = User.find_by(id: ENV['USER_ID'])
+    raise "user with ID #{ENV['USER_ID']} not found" if user.nil?
+
+    license_issues = Issue.where(
+      tracker_id: RLM::Setup::Trackers.all.map(&:id),
+      assigned_to_id: user.id
+    )
+
+    license_issues.each do |issue|
+      issue.update_columns(assigned_to_id: default_user.id)
+      j = Journal.create(journalized: issue, user_id: default_user.id, notes: "ASSIGN '#{issue.subject} ##{issue.id}' FROM #{user.name} TO #{default_user.name}")
+      puts j.notes
+    end
+  end
+
 end
