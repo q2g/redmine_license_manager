@@ -146,11 +146,7 @@ namespace :rlm do
       assigned_to_id: user.id
     )
 
-    license_issues.each do |issue|
-      issue.update_columns(assigned_to_id: default_user.id)
-      j = Journal.create(journalized: issue, user_id: default_user.id, notes: "ASSIGN '#{issue.subject} ##{issue.id}' FROM #{user.name} TO #{default_user.name}")
-      puts j.notes
-    end
+    license_issues.update_all(assigned_to_id: default_user.id)
   end
 
 end

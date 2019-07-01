@@ -131,10 +131,8 @@ class LicenseInvoicingService
             end
           end
 
-          # Lizenz / Wartungstickets nach der Berechnung immer an Konrad zuweisen.
-          # TODO: dont use static ids here
-          if iss.assigned_to_id != 3 then
-            iss.assigned_to_id=3
+          if iss.assigned_to_id != Setting.plugin_redmine_license_manager['rlm_default_user_id'].to_i then
+            iss.assigned_to_id = Setting.plugin_redmine_license_manager['rlm_default_user_id']
             iss.save
           end
         rescue Exception => e
