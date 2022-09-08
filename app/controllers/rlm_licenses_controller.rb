@@ -1,6 +1,6 @@
 class RlmLicensesController < ApplicationController
   
-  skip_filter *_process_action_callbacks.map(&:filter), only: [:index, :get_lefs_json]
+  skip_after_action *_process_action_callbacks.map(&:filter), only: [:index, :get_lefs_json]
   
   before_filter :check_access_permission
   
