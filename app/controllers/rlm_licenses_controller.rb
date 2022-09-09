@@ -3,6 +3,7 @@ protect_from_forgery with: :exception
   skip_after_action *_process_action_callbacks.map(&:filter), only: [:index, :get_lefs_json]
   
   before_action :check_access_permission
+  skip_before_action :session_expiration, only: :index
   
   def index
     result = ::LefService.issue_from_serial_and_checksum(params)
