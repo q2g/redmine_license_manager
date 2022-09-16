@@ -1,9 +1,8 @@
 class RlmLicensesController < ApplicationController
-protect_from_forgery with: :exception
-  skip_after_action *_process_action_callbacks.map(&:filter), only: [:index, :get_lefs_json]
   
-  before_action :check_access_permission
-  skip_before_action :session_expiration, only: :index
+  skip_after_action *_process_action_callbacks.map(&:filter), only: [:index, :get_lefs_json], raise: false
+  
+  before_filter :check_access_permission, raise: false
   
   def index
     result = ::LefService.issue_from_serial_and_checksum(params)
