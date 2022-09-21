@@ -2,7 +2,7 @@ class RlmLicensesController < ApplicationController
   
   skip_after_action *_process_action_callbacks.map(&:filter), only: [:index, :get_lefs_json], raise: false
   
-  before_filter :check_access_permission, raise: false
+  before_action :check_access_permission, raise: false
   
   def index
     result = ::LefService.issue_from_serial_and_checksum(params)
